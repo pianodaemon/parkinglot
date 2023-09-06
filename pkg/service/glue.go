@@ -44,6 +44,7 @@ func Engage(logger *logrus.Logger) (merr error) {
 		mgmt.HandleFunc("/cars", co.ListCars(cc.DisplayAll)).Methods("GET")
 		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}", carIDMask), co.ListCar(cc.Display)).Methods("GET")
 		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}/delete", carIDMask), co.DeleteCar(cc.Destroy)).Methods("PUT")
+		mgmt.HandleFunc("/create", co.CreateCar(cc.Place)).Methods("POST")
 		return router
 	}
 

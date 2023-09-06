@@ -98,6 +98,11 @@ func (cc *ParkingLot) Destroy(carID string) error {
 	return nil
 }
 
+// Place a newer car within the pool
+func (cc *ParkingLot) Place(dto *CarDTO) (string, error) {
+	return "", nil
+}
+
 // Spawns an newer instance of the parking lot
 func NewParkingLot(logger *logrus.Logger) *ParkingLot {
 
