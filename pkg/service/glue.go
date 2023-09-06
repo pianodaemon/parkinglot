@@ -40,10 +40,12 @@ func Engage(logger *logrus.Logger) (merr error) {
 		router := mux.NewRouter()
 
 		v1 := router.PathPrefix("/v1").Subrouter()
-		mgmt := v1.PathPrefix("/crud").Subrouter()
-		mgmt.HandleFunc("/cars", co.ListCars(cc.DisplayAll)).Methods("GET")
+		cruds := v1.PathPrefix("/cruds").Subrouter()
+
+		mgmt := cruds.PathPrefix("/cars").Subrouter()
+		mgmt.HandleFunc("/", co.ListCars(cc.DisplayAll)).Methods("GET")
 		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}", carIDMask), co.ListCar(cc.Display)).Methods("GET")
-		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}/delete", carIDMask), co.DeleteCar(cc.Destroy)).Methods("PUT")
+		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}/delete", carIDMask), co.DeleteCar(cc.Destroy)).Methods("DELETE")
 		mgmt.HandleFunc("/create", co.CreateCar(cc.Place)).Methods("POST")
 		return router
 	}

@@ -135,7 +135,7 @@ func ListCars(pullInfo func() ([]ve.CarDTO, error)) func(w http.ResponseWriter, 
 
 		if err != nil {
 
-			w.WriteHeader(http.StatusBadRequest)
+			w.WriteHeader(http.StatusNotFound)
 
 			jsonapi.MarshalErrors(w, []*jsonapi.ErrorObject{{
 				Code:   strconv.Itoa(int(EndPointNoCarsYet)),
