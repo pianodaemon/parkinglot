@@ -10,6 +10,39 @@ import (
 	ve "immortalcrab.com/parkinglot/pkg/business"
 )
 
+// Creates a Car
+func CreateCar(insertor func(dto *ve.CarDTO) (string, error)) func(w http.ResponseWriter, r *http.Request) {
+
+	type Response struct {
+		CarID string `json:"car_id"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		dto := new(ve.CarDTO)
+		decoder := json.NewDecoder(r.Body)
+		decoder.Decode(&dto)
+		w.Header().Set("Content-Type", "application/json")
+
+		carID, err := insertor(dto)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			jsonapi.MarshalErrors(w, []*jsonapi.ErrorObject{{
+				Code:   strconv.Itoa(int(EndPointCarNotCreated)),
+				Title:  "Failed creation",
+				Detail: err.Error(),
+			}})
+
+			return
+		}
+
+		w.WriteHeader(http.StatusAccepted)
+		json.NewEncoder(w).Encode(Response{
+			CarID: carID,
+		})
+	}
+}
+
 // Deletes a Car
 func DeleteCar(destructor func(string) error) func(w http.ResponseWriter, r *http.Request) {
 
