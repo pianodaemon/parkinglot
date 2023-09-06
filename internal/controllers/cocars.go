@@ -10,6 +10,45 @@ import (
 	ve "immortalcrab.com/parkinglot/pkg/business"
 )
 
+// Deletes a Car
+func DeleteCar(destructor func(string) error) func(w http.ResponseWriter, r *http.Request) {
+
+	type Response struct {
+		Code  int    `json:"code"`
+		CarID string `json:"car_id"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		vars := mux.Vars(r)
+
+		carID := vars["car_id"]
+
+		w.Header().Set("Content-Type", "application/json")
+
+		if err := destructor(carID); err != nil {
+
+			w.WriteHeader(http.StatusNotFound)
+
+			jsonapi.MarshalErrors(w, []*jsonapi.ErrorObject{{
+				Code:   strconv.Itoa(int(EndPointFailedDeletion)),
+				Title:  "Failed deletion",
+				Detail: err.Error(),
+			}})
+
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+
+		json.NewEncoder(w).Encode(Response{
+			Code:  int(Success),
+			CarID: carID,
+		})
+
+	}
+}
+
 // Displays a choosen car
 func ListCar(displayer func(string) (*ve.CarDTO, error)) func(w http.ResponseWriter, r *http.Request) {
 
