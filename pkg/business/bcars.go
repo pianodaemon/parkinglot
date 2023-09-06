@@ -47,7 +47,7 @@ func renderDummyFromReal(car *Car) CarDTO {
 	return dto
 }
 
-// Gets with reentrancy a dummy car from its real one as per the job identifier
+// Gets with reentrancy a dto car from its real one as per the car identifier
 func (cc *ParkingLot) Display(carID string) (*CarDTO, error) {
 
 	cc.ctrlMutex.Lock()
@@ -78,6 +78,24 @@ func (cc *ParkingLot) DisplayAll() ([]CarDTO, error) {
 	}
 
 	return nil, errors.New("There are not any car at the parking lot now")
+}
+
+// Attempts with reentrancy to destroy a car
+func (cc *ParkingLot) Destroy(carID string) error {
+
+	cc.logger.Printf("Attempting car destruction of %s", carID)
+
+	cc.ctrlMutex.Lock()
+	_, found := cc.slots[carID]
+	defer cc.ctrlMutex.Unlock()
+
+	if !found {
+		return errors.New("Car not found")
+	}
+
+	delete(cc.slots, carID)
+	cc.logger.Printf("Destroyed car %s", carID)
+	return nil
 }
 
 // Spawns an newer instance of the parking lot
