@@ -100,7 +100,18 @@ func (cc *ParkingLot) Destroy(carID string) error {
 
 // Place a newer car within the pool
 func (cc *ParkingLot) Place(dto *CarDTO) (string, error) {
-	return "", nil
+
+	car := &Car{}
+	car.year = dto.Year
+	cc.ctrlMutex.Lock()
+	car.uuid = uuid.NewV4()
+	cc.slots[strUUID(car.uuid)] = car
+	cc.ctrlMutex.Unlock()
+	dummy, err := cc.Display(strUUID(car.uuid))
+	if err != nil {
+		return "", err
+	}
+	return dummy.Identifier, nil
 }
 
 // Spawns an newer instance of the parking lot
