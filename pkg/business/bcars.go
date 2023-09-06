@@ -47,6 +47,21 @@ func renderDummyFromReal(car *Car) CarDTO {
 	return dto
 }
 
+// Gets with reentrancy a dummy car from its real one as per the job identifier
+func (cc *ParkingLot) Display(carID string) (*CarDTO, error) {
+
+	cc.ctrlMutex.Lock()
+	j, found := cc.slots[carID]
+	cc.ctrlMutex.Unlock()
+
+	if found {
+		jd := renderDummyFromReal(j)
+		return &jd, nil
+	}
+
+	return nil, errors.New("Car not found")
+}
+
 // Gets with reentrancy all the dto cars from their real ones
 func (cc *ParkingLot) DisplayAll() ([]CarDTO, error) {
 	var dummies []CarDTO

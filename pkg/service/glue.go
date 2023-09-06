@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/gorilla/mux"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/sirupsen/logrus"
@@ -9,6 +11,8 @@ import (
 	"immortalcrab.com/parkinglot/internal/rsapi"
 	ve "immortalcrab.com/parkinglot/pkg/business"
 )
+
+const carIDMask string = "[[:alnum:]\\-]+"
 
 var apiSettings rsapi.RestAPISettings
 
@@ -36,9 +40,9 @@ func Engage(logger *logrus.Logger) (merr error) {
 		router := mux.NewRouter()
 
 		v1 := router.PathPrefix("/v1").Subrouter()
-
 		mgmt := v1.PathPrefix("/crud").Subrouter()
 		mgmt.HandleFunc("/cars", co.ListCars(cc.DisplayAll)).Methods("GET")
+		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}", carIDMask), co.ListCar(cc.Display)).Methods("GET")
 
 		return router
 	}

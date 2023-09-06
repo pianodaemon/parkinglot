@@ -6,8 +6,47 @@ import (
 	"strconv"
 
 	"github.com/google/jsonapi"
+	"github.com/gorilla/mux"
 	ve "immortalcrab.com/parkinglot/pkg/business"
 )
+
+// Displays a choosen car
+func ListCar(displayer func(string) (*ve.CarDTO, error)) func(w http.ResponseWriter, r *http.Request) {
+
+	type Response struct {
+		Info ve.CarDTO `json:"car"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		vars := mux.Vars(r)
+
+		carID := vars["car_id"]
+
+		dto, err := displayer(carID)
+
+		w.Header().Set("Content-Type", "application/json")
+
+		if err != nil {
+
+			w.WriteHeader(http.StatusNotFound)
+
+			jsonapi.MarshalErrors(w, []*jsonapi.ErrorObject{{
+				Code:   strconv.Itoa(int(EndPointCarNotFound)),
+				Title:  "Car not found",
+				Detail: err.Error(),
+			}})
+
+			return
+		}
+
+		w.WriteHeader(http.StatusOK)
+
+		json.NewEncoder(w).Encode(Response{
+			Info: *dto,
+		})
+	}
+}
 
 // Displays all the existing cars
 func ListCars(pullInfo func() ([]ve.CarDTO, error)) func(w http.ResponseWriter, r *http.Request) {
