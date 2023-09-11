@@ -31,7 +31,7 @@ type RestAPI struct {
 	logger  *logrus.Logger
 	server  *http.Server
 	Healthy int64
-	done    chan bool
+	done    chan struct{}
 	quit    chan os.Signal
 }
 
@@ -100,7 +100,7 @@ func (api *RestAPI) GetMemMapSizeUpload() int64 {
 
 // Starts the RESTful API mechanism
 func (api *RestAPI) PowerOn() {
-	api.done = make(chan bool)
+	api.done = make(chan struct{})
 	api.quit = make(chan os.Signal, 1)
 	signal.Notify(api.quit, syscall.SIGINT, syscall.SIGTERM)
 
