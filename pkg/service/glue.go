@@ -43,7 +43,7 @@ func Engage(logger *logrus.Logger) (merr error) {
 		cruds := v1.PathPrefix("/cruds").Subrouter()
 
 		mgmt := cruds.PathPrefix("/cars").Subrouter()
-		mgmt.HandleFunc("/", co.ListCars(cc.DisplayAll)).Methods("GET")
+		mgmt.HandleFunc("/list", co.ListCars(cc.DisplayAll)).Methods("GET")
 		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}", carIDMask), co.ListCar(cc.Display)).Methods("GET")
 		mgmt.HandleFunc(fmt.Sprintf("/{car_id:%s}/delete", carIDMask), co.DeleteCar(cc.Destroy)).Methods("DELETE")
 		mgmt.HandleFunc("/create", co.CreateCar(cc.Place)).Methods("POST")

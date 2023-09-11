@@ -11,6 +11,9 @@ build: format
 	GOARCH=amd64 \
 	$(GOBUILD) -o $(PARKINGLOT_EXE) cmd/http/run.go
 
+test:
+	$(GOCMD) test ./...
+
 format:
 	$(GOCMD) fmt ./...
 

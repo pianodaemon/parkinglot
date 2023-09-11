@@ -98,6 +98,21 @@ func (cc *ParkingLot) Destroy(carID string) error {
 	return nil
 }
 
+// Alter a car within the pool
+func (cc *ParkingLot) Alter(dto *CarDTO) (string, error) {
+
+	cc.ctrlMutex.Lock()
+	car, found := cc.slots[dto.Identifier]
+	defer cc.ctrlMutex.Unlock()
+
+	if !found {
+		return "", errors.New("Car not found")
+	}
+
+	car.year = dto.Year
+	return strUUID(car.uuid), nil
+}
+
 // Place a newer car within the pool
 func (cc *ParkingLot) Place(dto *CarDTO) (string, error) {
 
