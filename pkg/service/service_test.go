@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -23,13 +24,29 @@ func checkResponseCode(t *testing.T, expected, actual int) {
 	}
 }
 
+func newParkingLotWithNullLogging() *ve.ParkingLot {
+	logger, _ := test.NewNullLogger()
+	return ve.NewParkingLot(logger)
+}
+
 func TestEmptyPersitance(t *testing.T) {
 
-	logger, _ := test.NewNullLogger()
-	cc := ve.NewParkingLot(logger)
+	cc := newParkingLotWithNullLogging()
 
 	req, _ := http.NewRequest("GET", "/v1/cruds/cars/list", nil)
 	response := executeRequest(configureRouter(cc), req)
 
 	checkResponseCode(t, http.StatusNotFound, response.Code)
+}
+
+func TestCarCreation(t *testing.T) {
+
+	logger, _ := test.NewNullLogger()
+	cc := ve.NewParkingLot(logger)
+
+	var jsonStr = []byte(`{ "year":2020 }`)
+	req, _ := http.NewRequest("POST", "/v1/cruds/cars/create", bytes.NewBuffer(jsonStr))
+	response := executeRequest(configureRouter(cc), req)
+
+	checkResponseCode(t, http.StatusAccepted, response.Code)
 }
