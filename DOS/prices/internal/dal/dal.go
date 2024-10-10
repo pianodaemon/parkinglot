@@ -2,8 +2,6 @@ package dal
 
 import (
 	"context"
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"log"
 	"time"
@@ -11,6 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+
+	"blaucorp.com/prices/internal/misc"
 )
 
 // Connect to MongoDB
@@ -63,13 +63,6 @@ func AssignTargets(db *mongo.Database, listName string, targets []string) {
 	fmt.Printf("Assigned targets %v to list '%s'\n", targets, listName)
 }
 
-// Function to generate a unique hash for the tuple
-func generateHash(priceTuple map[string]string) string {
-	tupleString := priceTuple["list"] + priceTuple["sku"] + priceTuple["unit"] + priceTuple["material"] + priceTuple["tservicio"]
-	hash := md5.Sum([]byte(tupleString))
-	return hex.EncodeToString(hash[:])
-}
-
 // Function to add a price to the list
 func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) {
 	priceCollection := db.Collection("prices")
@@ -80,7 +73,7 @@ func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio strin
 		"material":  material,
 		"tservicio": tservicio,
 	}
-	priceHash := generateHash(priceTuple)
+	priceHash := misc.GenerateHash(priceTuple)
 	priceData := bson.D{
 		{"tuple", priceTuple},
 		{"hash", priceHash},
@@ -96,7 +89,7 @@ func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio strin
 // Function to retrieve a price by tuple
 func RetrievePriceByTuple(db *mongo.Database, priceTuple map[string]string) {
 	priceCollection := db.Collection("prices")
-	priceHash := generateHash(priceTuple)
+	priceHash := misc.GenerateHash(priceTuple)
 
 	filter := bson.D{{"hash", priceHash}}
 	var result bson.M

@@ -1,4 +1,4 @@
-module blaucorp.com/price-lists
+module blaucorp.com/prices
 
 go 1.23.2
 
