@@ -18,7 +18,7 @@ The next json fragments elaborate on one of the several lists owned by "viajes P
 # Collection "price_lists"
 
 {
-    "list": "winter-1728533139",  # <--- this is unique 
+    "list": "winter-1728533139",  # <--- this is a unique index
     "owner": "viajes Ponchito"
 }
 ```
@@ -48,7 +48,7 @@ The next json fragments elaborate on one of the several lists owned by "viajes P
             "material": "madera",
             "tservicio": "limpia"
       },
-     "hash": "6f5902ac237024bdd0c176cb93063dc4",  # <--- this is unique 
+     "hash": "6f5902ac237024bdd0c176cb93063dc4",  # <--- this is a unique index 
      "price": 15.50
 }
 ```
