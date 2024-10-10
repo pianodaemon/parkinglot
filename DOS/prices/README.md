@@ -10,7 +10,7 @@
 -   **The targets**: The list can be shared with multiple targets (customers or any other entity).
 -   **The prices**: Each price is associated with a unique hash and the corresponding tuple, ensuring that even if multiple items have the same attributes (like `sku` or `material`), they are uniquely identified.
 
-### How the data is store and addressed
+### How the data is stored and addressed
 
 The next json fragments elaborate on one of the several lists owned by "viajes Ponchito" ( This is basically how data is being structured within MongoDB ). 
 
