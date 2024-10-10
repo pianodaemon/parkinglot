@@ -1,10 +1,10 @@
-package main
+package hookups
 
 import (
-	"blaucorp.com/price-lists/dal"
+	"blaucorp.com/prices/internal/dal"
 )
 
-func main() {
+func Calis() {
 	// Connect to MongoDB
 	client, ctx := dal.ConnectMongoDB()
 	defer client.Disconnect(ctx)
