@@ -1,8 +1,12 @@
 package rest
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
 
 	"blaucorp.com/prices/internal/dal"
 	"github.com/gin-gonic/gin"
@@ -43,19 +47,33 @@ func SetHandlers(r *gin.Engine) {
 			return
 		}
 		// Connect to MongoDB
-		client, ctx := dal.ConnectMongoDB()
-		defer client.Disconnect(ctx)
+		mongoURI := fmt.Sprintf("mongodb://user:123qwe@%s:%s/", "localhost", "27017")
+		var client *mongo.Client
+		err := dal.SetUpConnMongoDB(&client, mongoURI)
+		if err != nil {
+			panic(err.Error())
+		}
 
 		db := client.Database("pricing_db")
 
 		// Populate the data
-		dal.CreatePriceList(db, reqPriceList.List, reqPriceList.Owner)
+		err = dal.CreatePriceList(db, reqPriceList.List, reqPriceList.Owner)
+		if err != nil {
+			panic(err.Error())
+		}
 		dal.AssignTargets(db, reqPriceList.List, reqPriceList.Targets)
 
 		// Add fake prices
 		for _, price := range reqPriceList.Prices {
 			dal.AddPrice(db, reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
 		}
+
+		ctx, cancelDisconn := context.WithTimeout(context.Background(), 2*time.Second)
+		client.Disconnect(ctx)
+
+		/* It'll be even called if succeeded just to
+		   release resources of timing */
+		defer cancelDisconn()
 
 		fmt.Println("-------> body: ", reqPriceList)
 		c.JSON(http.StatusOK, gin.H{
