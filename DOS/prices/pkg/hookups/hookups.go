@@ -21,7 +21,10 @@ func Calis() {
 	db := client.Database("pricing_db")
 
 	// Populate the data
-	dal.CreatePriceList(db, "invierno-2024-1728533139", "viajes Ponchito")
+	err = dal.CreatePriceList(db, "invierno-2024-1728533139", "viajes Ponchito")
+	if err != nil {
+		panic(err.Error())
+	}
 	dal.AssignTargets(db, "invierno-2024-1728533139", []string{"pepsi", "coca"})
 
 	// Add fake prices

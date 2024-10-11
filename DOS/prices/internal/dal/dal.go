@@ -12,7 +12,7 @@ import (
 )
 
 // Function to create a price list
-func CreatePriceList(db *mongo.Database, listName, owner string) {
+func CreatePriceList(db *mongo.Database, listName, owner string) error {
 	priceListCollection := db.Collection("price_lists")
 	priceList := bson.D{
 		{"list", listName},
@@ -20,9 +20,10 @@ func CreatePriceList(db *mongo.Database, listName, owner string) {
 	}
 	_, err := priceListCollection.InsertOne(context.TODO(), priceList)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	fmt.Printf("Created price list '%s' for owner '%s'\n", listName, owner)
+
+	return nil
 }
 
 // Function to assign targets to the price list
