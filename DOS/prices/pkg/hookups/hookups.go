@@ -7,10 +7,8 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 
-
 	"blaucorp.com/prices/internal/dal"
 	"blaucorp.com/prices/internal/rest"
-
 )
 
 func Calis() {
