@@ -5,9 +5,12 @@ import (
 	"fmt"
 	"time"
 
+	"go.mongodb.org/mongo-driver/mongo"
+
+
 	"blaucorp.com/prices/internal/dal"
 	"blaucorp.com/prices/internal/rest"
-	"go.mongodb.org/mongo-driver/mongo"
+
 )
 
 func Calis() {
