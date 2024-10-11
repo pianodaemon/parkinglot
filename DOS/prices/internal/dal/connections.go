@@ -12,34 +12,32 @@ import (
 // Sets a mongo connection up
 func SetUpConnMongoDB(mcli **mongo.Client, uri string) error {
 
-	var err error
-	var cli *mongo.Client
-
-	cli, err = mongo.NewClient(options.Client().ApplyURI(uri))
+	// Create a new MongoDB client
+	cli, err := mongo.NewClient(options.Client().ApplyURI(uri))
 	if err != nil {
-		goto culminate
+		return err
 	}
 
-	{
-		ctxConn, cancelConn := context.WithTimeout(context.Background(),
-			10*time.Second)
-		defer cancelConn()
+	// Set up a timeout for the connection
+	ctxConn, cancelConn := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancelConn()
 
-		if err = cli.Connect(ctxConn); err != nil {
-			goto culminate
-		}
-
-		ctx, cancelPing := context.WithTimeout(context.Background(),
-			2*time.Second)
-		defer cancelPing()
-
-		if err = cli.Ping(ctx, readpref.Primary()); err == nil {
-			*mcli = cli
-		}
+	// Connect to MongoDB
+	if err = cli.Connect(ctxConn); err != nil {
+		return err
 	}
 
-culminate:
+	// Set up a timeout for the ping
+	ctxPing, cancelPing := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancelPing()
 
-	return err
+	// Ping the MongoDB server to ensure the connection is established
+	if err = cli.Ping(ctxPing, readpref.Primary()); err != nil {
+		return err
+	}
 
+	// Set the client if the connection and ping succeed
+	*mcli = cli
+
+	return nil
 }
