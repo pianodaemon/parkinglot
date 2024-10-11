@@ -2,6 +2,7 @@ package hookups
 
 import (
 	"blaucorp.com/prices/internal/dal"
+	"blaucorp.com/prices/internal/rest"
 )
 
 func Calis() {
@@ -29,4 +30,11 @@ func Calis() {
 		"tservicio": "limpia",
 	}
 	dal.RetrievePriceByTuple(db, priceTuple)
+}
+
+func CalisServer() {
+
+	r := rest.GetEngine()
+	rest.SetHandlers(r)
+	r.Run() // listen and serve on 0.0.0.0:8080
 }
