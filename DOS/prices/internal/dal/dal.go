@@ -43,7 +43,7 @@ func AssignTargets(db *mongo.Database, listName string, targets []string) {
 }
 
 // Function to add a price to the list
-func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) {
+func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) error {
 	priceCollection := db.Collection("prices")
 	priceTuple := map[string]string{
 		"list":      listName,
@@ -60,9 +60,10 @@ func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio strin
 	}
 	_, err := priceCollection.InsertOne(context.TODO(), priceData)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
-	fmt.Printf("Added price %.2f for SKU %s to list '%s'\n", price, sku, listName)
+
+	return nil
 }
 
 // Function to retrieve a price by tuple
