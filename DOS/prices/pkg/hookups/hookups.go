@@ -7,7 +7,10 @@ import (
 
 	"go.mongodb.org/mongo-driver/mongo"
 
+
 	"blaucorp.com/prices/internal/dal"
+	"blaucorp.com/prices/internal/rest"
+
 )
 
 func Calis() {
@@ -48,4 +51,11 @@ func Calis() {
 	/* It'll be even called if succeeded just to
 	   release resources of timing */
 	defer cancelDisconn()
+}
+
+func CalisServer() {
+
+	r := rest.GetEngine()
+	rest.SetHandlers(r)
+	r.Run() // listen and serve on 0.0.0.0:8080
 }
