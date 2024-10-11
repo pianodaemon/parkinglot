@@ -43,7 +43,6 @@ func TestWithMongoDBContainer(t *testing.T) {
 		t.Fatalf("failed to get container port: %s", err)
 	}
 
-	// Use SetMdbClientUp to connect to MongoDB container
 	mongoURI := fmt.Sprintf("mongodb://%s:%s", host, port.Port())
 	var client *mongo.Client
 	err = dal.SetUpConnMongoDB(&client, mongoURI)

@@ -1,13 +1,22 @@
 package hookups
 
 import (
+	"context"
+	"fmt"
+	"time"
+
+	"go.mongodb.org/mongo-driver/mongo"
+
 	"blaucorp.com/prices/internal/dal"
 )
 
 func Calis() {
-	// Connect to MongoDB
-	client, ctx := dal.ConnectMongoDB()
-	defer client.Disconnect(ctx)
+	mongoURI := fmt.Sprintf("mongodb://user:123qwe@%s:%s/", "localhost", "27017")
+	var client *mongo.Client
+	err := dal.SetUpConnMongoDB(&client, mongoURI)
+	if err != nil {
+		panic("failed to set up mongo client: %s")
+	}
 
 	db := client.Database("pricing_db")
 
@@ -29,4 +38,11 @@ func Calis() {
 		"tservicio": "limpia",
 	}
 	dal.RetrievePriceByTuple(db, priceTuple)
+
+	ctx, cancelDisconn := context.WithTimeout(context.Background(), 2*time.Second)
+	client.Disconnect(ctx)
+
+	/* It'll be even called if succeeded just to
+	   release resources of timing */
+	defer cancelDisconn()
 }
