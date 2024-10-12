@@ -3,7 +3,6 @@ package dal
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,7 +26,8 @@ func CreatePriceList(db *mongo.Database, listName, owner string) error {
 }
 
 // Function to assign targets to the price list
-func AssignTargets(db *mongo.Database, listName string, targets []string) {
+func AssignTargets(db *mongo.Database, listName string, targets []string) error {
+
 	targetCollection := db.Collection("targets")
 	for _, target := range targets {
 		targetData := bson.D{
@@ -36,10 +36,12 @@ func AssignTargets(db *mongo.Database, listName string, targets []string) {
 		}
 		_, err := targetCollection.InsertOne(context.TODO(), targetData)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 	}
+
 	fmt.Printf("Assigned targets %v to list '%s'\n", targets, listName)
+	return nil
 }
 
 // Function to add a price to the list
