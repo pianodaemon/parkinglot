@@ -76,7 +76,8 @@ func getMongoURI(ctx context.Context, mongoC testcontainers.Container) (string, 
 // Helper function to verify prices in the database
 func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 
-	err := dal.CreatePriceList(db, listName, "viajes Ponchito")
+	owner := "viajes Ponchito"
+	err := dal.CreatePriceList(db, listName, owner)
 	if err != nil {
 		t.Fatalf("Failed to create price list: %s", err)
 	}
@@ -84,6 +85,16 @@ func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 	targets := []string{"pepsi", "coca"}
 	dal.AssignTargets(db, listName, targets)
 	log.Printf("Assigned targets %v to list '%s'\n", targets, listName)
+
+	availables, err := dal.GetListsByOwnerAndTargets(db, owner, targets)
+	if err == nil {
+		const uniqueSlotExpected = 0
+		if len(availables) > 0 && availables[uniqueSlotExpected] != listName {
+			t.Fatalf("The list was just created but it is not found %s", listName)
+		}
+	} else {
+		t.Fatalf("list not retrieved : %s", err)
+	}
 
 	// Adding prices
 	prices := []struct {
