@@ -40,7 +40,6 @@ func AssignTargets(db *mongo.Database, listName string, targets []string) error 
 		}
 	}
 
-	fmt.Printf("Assigned targets %v to list '%s'\n", targets, listName)
 	return nil
 }
 

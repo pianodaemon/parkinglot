@@ -81,7 +81,9 @@ func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 		t.Fatalf("Failed to create price list: %s", err)
 	}
 
-	dal.AssignTargets(db, listName, []string{"pepsi", "coca"})
+	targets := []string{"pepsi", "coca"}
+	dal.AssignTargets(db, listName, targets)
+	log.Printf("Assigned targets %v to list '%s'\n", targets, listName)
 
 	// Adding prices
 	prices := []struct {
