@@ -39,6 +39,7 @@ func TestWithMongoDBContainer(t *testing.T) {
 	db := client.Database("pricing_db")
 
 	verifyPrices(t, db)
+	verifyDeletion(t, db)
 }
 
 // Helper function to set up MongoDB container
@@ -145,4 +146,15 @@ func verifyPrices(t *testing.T, db *mongo.Database) {
 	}
 
 	log.Println("Price verification completed successfully")
+}
+
+// Helper function to verify deletion in the database
+func verifyDeletion(t *testing.T, db *mongo.Database) error {
+
+	err := dal.DeleteList(db, "winter-2024-1728533139")
+	if err != nil {
+		t.Fatalf("Failed to delete price list %s: %s", "winter-2024-1728533139", err)
+	}
+
+	return nil
 }

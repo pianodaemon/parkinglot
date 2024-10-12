@@ -87,3 +87,28 @@ func RetrievePriceByTuple(db *mongo.Database, priceTuple map[string]string) (flo
 
 	return price, nil
 }
+
+// Deletes a list along with its associated targets and prices.
+func DeleteList(db *mongo.Database, listName string) error {
+	ctx := context.TODO()
+
+	// Delete associated targets
+	_, err := db.Collection("targets").DeleteMany(ctx, bson.M{"list": listName})
+	if err != nil {
+		return fmt.Errorf("failed to delete targets for list '%s': %v", listName, err)
+	}
+
+	// Delete associated prices
+	_, err = db.Collection("prices").DeleteMany(ctx, bson.M{"tuple.list": listName})
+	if err != nil {
+		return fmt.Errorf("failed to delete prices for list '%s': %v", listName, err)
+	}
+
+	// Delete the list itself
+	_, err = db.Collection("lists").DeleteOne(ctx, bson.M{"list": listName})
+	if err != nil {
+		return fmt.Errorf("failed to delete list '%s': %v", listName, err)
+	}
+
+	return nil
+}
