@@ -12,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"blaucorp.com/prices/internal/dal"
+	"blaucorp.com/prices/internal/misc"
 )
 
 func TestWithMongoDBContainer(t *testing.T) {
@@ -38,7 +39,7 @@ func TestWithMongoDBContainer(t *testing.T) {
 
 	db := client.Database("pricing_db")
 
-	listName := "winter-2024-1728533139"
+	listName := misc.GenerateNameWithTimestamp("winter-2024")
 	verifyPrices(t, db, listName)
 	verifyDeletion(t, db, listName)
 }
