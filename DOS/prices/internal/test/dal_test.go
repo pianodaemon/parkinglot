@@ -61,10 +61,22 @@ func TestWithMongoDBContainer(t *testing.T) {
 
 	dal.AssignTargets(db, "winter-2024-1728533139", []string{"pepsi", "coca"})
 
-	// Add fake prices
-	dal.AddPrice(db, "winter-2024-1728533139", "1254-545-66", "m3", "madera", "limpia", 15.50)
-	dal.AddPrice(db, "winter-2024-1728533139", "7845-155-78", "kg", "hierro", "sucia", 25.75)
-	dal.AddPrice(db, "winter-2024-1728533139", "9987-845-23", "lt", "agua", "purificada", 3.80)
+	// Adding prices
+	prices := []struct {
+		sku, unit, material, tservicio string
+		price                          float64
+	}{
+		{"1254-545-66", "m3", "madera", "limpia", 15.50},
+		{"7845-155-78", "kg", "hierro", "sucia", 25.75},
+		{"9987-845-23", "lt", "agua", "purificada", 3.80},
+	}
+
+	for _, p := range prices {
+		err = dal.AddPrice(db, "winter-2024-1728533139", p.sku, p.unit, p.material, p.tservicio, p.price)
+		if err != nil {
+			t.Fatalf("Failed to add price %v: %s", p, err)
+		}
+	}
 
 	// Test cases for price retrieval
 	priceTests := []struct {
