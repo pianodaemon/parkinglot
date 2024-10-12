@@ -11,19 +11,13 @@ import (
 
 // Sets a mongo connection up
 func SetUpConnMongoDB(mcli **mongo.Client, uri string) error {
-
-	// Create a new MongoDB client
-	cli, err := mongo.NewClient(options.Client().ApplyURI(uri))
-	if err != nil {
-		return err
-	}
-
-	// Set up a timeout for the connection
+	// Connect to MongoDB
+	clientOptions := options.Client().ApplyURI(uri)
 	ctxConn, cancelConn := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancelConn()
 
-	// Connect to MongoDB
-	if err = cli.Connect(ctxConn); err != nil {
+	cli, err := mongo.Connect(ctxConn, clientOptions)
+	if err != nil {
 		return err
 	}
 
