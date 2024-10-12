@@ -53,7 +53,6 @@ func TestWithMongoDBContainer(t *testing.T) {
 
 	db := client.Database("pricing_db")
 
-	//
 	// Populate the data
 	err = dal.CreatePriceList(db, "winter-2024-1728533139", "viajes Ponchito")
 	if err != nil {
