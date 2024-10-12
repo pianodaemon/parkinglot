@@ -14,12 +14,12 @@ jobs:
         with:
           go-version: '1.23.2'
 
-      - name: Build Go application
+      - name: Build prices
         run: |
           cd DOS/prices
           make build
 
-      - name: Run tests for Nominator
+      - name: Run tests for prices
         run: |
           cd DOS/prices
           make test
