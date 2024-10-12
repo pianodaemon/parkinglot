@@ -14,6 +14,33 @@ import (
 	"blaucorp.com/prices/internal/dal"
 )
 
+func TestWithMongoDBContainer(t *testing.T) {
+
+	ctx := context.Background()
+
+	mongoC, err := setupMongoContainer(ctx)
+	if err != nil {
+		t.Fatalf("failed to start container: %s", err)
+	}
+	defer mongoC.Terminate(ctx)
+
+	mongoURI, err := getMongoURI(ctx, mongoC)
+	if err != nil {
+		t.Fatalf("Failed to retrieve MongoDB URI: %s", err)
+	}
+
+	var client *mongo.Client
+	err = dal.SetUpConnMongoDB(&client, mongoURI)
+	if err != nil {
+		t.Fatalf("failed to set up mongo client: %s", err)
+	}
+	defer client.Disconnect(ctx)
+
+	db := client.Database("pricing_db")
+
+	verifyPrices(t, db)
+}
+
 // Helper function to set up MongoDB container
 func setupMongoContainer(ctx context.Context) (testcontainers.Container, error) {
 	req := testcontainers.ContainerRequest{
@@ -28,41 +55,27 @@ func setupMongoContainer(ctx context.Context) (testcontainers.Container, error) 
 	})
 }
 
-func TestWithMongoDBContainer(t *testing.T) {
-
-	ctx := context.Background()
-
-	mongoC, err := setupMongoContainer(ctx)
-	if err != nil {
-		t.Fatalf("failed to start container: %s", err)
-	}
-	defer mongoC.Terminate(ctx)
-
-	// Get the host and port for the MongoDB container
+// Helper function to get MongoDB URI
+func getMongoURI(ctx context.Context, mongoC testcontainers.Container) (string, error) {
 	host, err := mongoC.Host(ctx)
 	if err != nil {
-		t.Fatalf("failed to get container host: %s", err)
+		return "", fmt.Errorf("failed to get container host: %w", err)
 	}
 
 	port, err := mongoC.MappedPort(ctx, "27017")
 	if err != nil {
-		t.Fatalf("failed to get container port: %s", err)
+		return "", fmt.Errorf("failed to get container port: %w", err)
 	}
 
-	mongoURI := fmt.Sprintf("mongodb://%s:%s", host, port.Port())
-	var client *mongo.Client
-	err = dal.SetUpConnMongoDB(&client, mongoURI)
-	if err != nil {
-		t.Fatalf("failed to set up mongo client: %s", err)
-	}
-	defer client.Disconnect(ctx)
+	return fmt.Sprintf("mongodb://%s:%s", host, port.Port()), nil
+}
 
-	db := client.Database("pricing_db")
+// Helper function to verify prices in the database
+func verifyPrices(t *testing.T, db *mongo.Database) {
 
-	// Populate the data
-	err = dal.CreatePriceList(db, "winter-2024-1728533139", "viajes Ponchito")
+	err := dal.CreatePriceList(db, "winter-2024-1728533139", "viajes Ponchito")
 	if err != nil {
-		panic(err.Error())
+		t.Fatalf("Failed to create price list: %s", err)
 	}
 
 	dal.AssignTargets(db, "winter-2024-1728533139", []string{"pepsi", "coca"})
@@ -84,8 +97,7 @@ func TestWithMongoDBContainer(t *testing.T) {
 		}
 	}
 
-	// Test cases for price retrieval
-	priceTests := []struct {
+	testCases := []struct {
 		priceTuple    map[string]string
 		expectedPrice float64
 	}{
@@ -121,17 +133,16 @@ func TestWithMongoDBContainer(t *testing.T) {
 		},
 	}
 
-	// Loop through test cases to verify each price
-	for _, test := range priceTests {
+	for _, test := range testCases {
 		price, err := dal.RetrievePriceByTuple(db, test.priceTuple)
 		if err != nil {
 			t.Fatalf("Failed to retrieve price for tuple %+v: %s", test.priceTuple, err)
 		}
 
 		if price != test.expectedPrice {
-			t.Fatalf("Price %.2f for tuple %+v is not the expected %.2f", price, test.priceTuple, test.expectedPrice)
+			t.Fatalf("Expected price %.2f for tuple %+v, got %.2f", test.expectedPrice, test.priceTuple, price)
 		}
 	}
 
-	log.Println("MongoDB Testcontainer is running and prices are verified")
+	log.Println("Price verification completed successfully")
 }
