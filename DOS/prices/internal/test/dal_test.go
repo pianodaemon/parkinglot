@@ -38,8 +38,9 @@ func TestWithMongoDBContainer(t *testing.T) {
 
 	db := client.Database("pricing_db")
 
-	verifyPrices(t, db)
-	verifyDeletion(t, db)
+	listName := "winter-2024-1728533139"
+	verifyPrices(t, db, listName)
+	verifyDeletion(t, db, listName)
 }
 
 // Helper function to set up MongoDB container
@@ -72,14 +73,14 @@ func getMongoURI(ctx context.Context, mongoC testcontainers.Container) (string, 
 }
 
 // Helper function to verify prices in the database
-func verifyPrices(t *testing.T, db *mongo.Database) {
+func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 
-	err := dal.CreatePriceList(db, "winter-2024-1728533139", "viajes Ponchito")
+	err := dal.CreatePriceList(db, listName, "viajes Ponchito")
 	if err != nil {
 		t.Fatalf("Failed to create price list: %s", err)
 	}
 
-	dal.AssignTargets(db, "winter-2024-1728533139", []string{"pepsi", "coca"})
+	dal.AssignTargets(db, listName, []string{"pepsi", "coca"})
 
 	// Adding prices
 	prices := []struct {
@@ -92,7 +93,7 @@ func verifyPrices(t *testing.T, db *mongo.Database) {
 	}
 
 	for _, p := range prices {
-		err = dal.AddPrice(db, "winter-2024-1728533139", p.sku, p.unit, p.material, p.tservicio, p.price)
+		err = dal.AddPrice(db, listName, p.sku, p.unit, p.material, p.tservicio, p.price)
 		if err != nil {
 			t.Fatalf("Failed to add price %v: %s", p, err)
 		}
@@ -104,7 +105,7 @@ func verifyPrices(t *testing.T, db *mongo.Database) {
 	}{
 		{
 			priceTuple: map[string]string{
-				"list":      "winter-2024-1728533139",
+				"list":      listName,
 				"sku":       "1254-545-66",
 				"unit":      "m3",
 				"material":  "madera",
@@ -114,7 +115,7 @@ func verifyPrices(t *testing.T, db *mongo.Database) {
 		},
 		{
 			priceTuple: map[string]string{
-				"list":      "winter-2024-1728533139",
+				"list":      listName,
 				"sku":       "7845-155-78",
 				"unit":      "kg",
 				"material":  "hierro",
@@ -124,7 +125,7 @@ func verifyPrices(t *testing.T, db *mongo.Database) {
 		},
 		{
 			priceTuple: map[string]string{
-				"list":      "winter-2024-1728533139",
+				"list":      listName,
 				"sku":       "9987-845-23",
 				"unit":      "lt",
 				"material":  "agua",
@@ -149,12 +150,10 @@ func verifyPrices(t *testing.T, db *mongo.Database) {
 }
 
 // Helper function to verify deletion in the database
-func verifyDeletion(t *testing.T, db *mongo.Database) error {
+func verifyDeletion(t *testing.T, db *mongo.Database, listName string) {
 
-	err := dal.DeleteList(db, "winter-2024-1728533139")
+	err := dal.DeleteList(db, listName)
 	if err != nil {
-		t.Fatalf("Failed to delete price list %s: %s", "winter-2024-1728533139", err)
+		t.Fatalf("Failed to delete price list %s: %s", listName, err)
 	}
-
-	return nil
 }
