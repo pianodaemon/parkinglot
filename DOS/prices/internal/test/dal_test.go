@@ -14,19 +14,25 @@ import (
 	"blaucorp.com/prices/internal/dal"
 )
 
-func TestWithMongoDBContainer(t *testing.T) {
-	// Request for a MongoDB container
-	ctx := context.Background()
+// Helper function to set up MongoDB container
+func setupMongoContainer(ctx context.Context) (testcontainers.Container, error) {
 	req := testcontainers.ContainerRequest{
-		Image:        "mongo:6.0", // or the version you need
+		Image:        "mongo:6.0",
 		ExposedPorts: []string{"27017/tcp"},
 		WaitingFor:   wait.ForLog("Waiting for connections").WithStartupTimeout(30 * time.Second),
 	}
 
-	mongoC, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+	return testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: req,
 		Started:          true,
 	})
+}
+
+func TestWithMongoDBContainer(t *testing.T) {
+
+	ctx := context.Background()
+
+	mongoC, err := setupMongoContainer(ctx)
 	if err != nil {
 		t.Fatalf("failed to start container: %s", err)
 	}
