@@ -51,5 +51,69 @@ func TestWithMongoDBContainer(t *testing.T) {
 	}
 	defer client.Disconnect(ctx)
 
-	log.Println("MongoDB Testcontainer is running and connected")
+	db := client.Database("pricing_db")
+
+	// Populate the data
+	err = dal.CreatePriceList(db, "winter-2024-1728533139", "viajes Ponchito")
+	if err != nil {
+		panic(err.Error())
+	}
+
+	dal.AssignTargets(db, "winter-2024-1728533139", []string{"pepsi", "coca"})
+
+	// Add fake prices
+	dal.AddPrice(db, "winter-2024-1728533139", "1254-545-66", "m3", "madera", "limpia", 15.50)
+	dal.AddPrice(db, "winter-2024-1728533139", "7845-155-78", "kg", "hierro", "sucia", 25.75)
+	dal.AddPrice(db, "winter-2024-1728533139", "9987-845-23", "lt", "agua", "purificada", 3.80)
+
+	// Test cases for price retrieval
+	priceTests := []struct {
+		priceTuple    map[string]string
+		expectedPrice float64
+	}{
+		{
+			priceTuple: map[string]string{
+				"list":      "winter-2024-1728533139",
+				"sku":       "1254-545-66",
+				"unit":      "m3",
+				"material":  "madera",
+				"tservicio": "limpia",
+			},
+			expectedPrice: 15.50,
+		},
+		{
+			priceTuple: map[string]string{
+				"list":      "winter-2024-1728533139",
+				"sku":       "7845-155-78",
+				"unit":      "kg",
+				"material":  "hierro",
+				"tservicio": "sucia",
+			},
+			expectedPrice: 25.75,
+		},
+		{
+			priceTuple: map[string]string{
+				"list":      "winter-2024-1728533139",
+				"sku":       "9987-845-23",
+				"unit":      "lt",
+				"material":  "agua",
+				"tservicio": "purificada",
+			},
+			expectedPrice: 3.80,
+		},
+	}
+
+	// Loop through test cases to verify each price
+	for _, test := range priceTests {
+		price, err := dal.RetrievePriceByTuple(db, test.priceTuple)
+		if err != nil {
+			t.Fatalf("Failed to retrieve price for tuple %+v: %s", test.priceTuple, err)
+		}
+
+		if price != test.expectedPrice {
+			t.Fatalf("Price %.2f for tuple %+v is not the expected %.2f", price, test.priceTuple, test.expectedPrice)
+		}
+	}
+
+	log.Println("MongoDB Testcontainer is running and prices are verified")
 }

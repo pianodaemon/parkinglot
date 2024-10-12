@@ -11,6 +11,9 @@ build: fmt
 	GOARCH=amd64 \
 	$(GOBUILD) -o $(PRICES_EXE) cmd/xxx/run.go
 
+test: build
+	$(GOCMD) test -v ./...
+
 fmt:
 	$(GOCMD) fmt ./...
 
