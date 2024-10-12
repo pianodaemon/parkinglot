@@ -67,26 +67,6 @@ func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio strin
 	return nil
 }
 
-// Function to retrieve a price by tuple
-func RetrievePriceByTuple(db *mongo.Database, priceTuple map[string]string) (float64, error) {
-	priceCollection := db.Collection("prices")
-	priceHash := misc.GenerateHash(priceTuple)
-
-	filter := bson.D{{"hash", priceHash}}
-	var result bson.M
-	err := priceCollection.FindOne(context.TODO(), filter).Decode(&result)
-	if err != nil {
-		return 0, err
-	}
-
-	price, ok := result["price"].(float64)
-	if !ok {
-		return 0, fmt.Errorf("price not found or invalid type")
-	}
-
-	return price, nil
-}
-
 // Deletes a list along with its associated targets and prices.
 func DeleteList(db *mongo.Database, listName string) error {
 	ctx := context.TODO()
