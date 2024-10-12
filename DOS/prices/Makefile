@@ -9,7 +9,7 @@ build: fmt
 	CGO_ENABLED=0 \
 	GOOS=linux \
 	GOARCH=amd64 \
-	$(GOBUILD) -o $(PRICES_EXE) cmd/xxx/run.go
+	$(GOBUILD) -o $(PRICES_EXE) cmd/http/run.go
 
 test: build
 	$(GOCMD) test -v ./...
