@@ -10,13 +10,22 @@ import (
 )
 
 // Engages the RESTful API
-func Engage() {
+func Engage() (merr error) {
+
+	defer func() {
+
+		if r := recover(); r != nil {
+			merr = r.(error)
+		}
+	}()
 
 	pricesManagerImplt := hups.NewPricesManager()
 
 	r := gin.Default()
 	setUpHandlers(r, pricesManagerImplt)
 	r.Run() // listen and serve on 0.0.0.0:8080
+
+	return nil
 }
 
 func setUpHandlers(r *gin.Engine, pm *hups.PricesManager) {
