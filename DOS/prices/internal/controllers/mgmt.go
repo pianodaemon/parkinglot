@@ -12,20 +12,22 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type price struct {
-	Sku       string  `json:"sku" binding:"required"`
-	Unit      string  `json:"unit" binding:"required"`
-	Material  string  `json:"material" binding:"required"`
-	Tservicio string  `json:"tservicio" binding:"required"`
-	Price     float64 `json:"price" binding:"required"`
-}
+type (
+	price struct {
+		Sku       string  `json:"sku" binding:"required"`
+		Unit      string  `json:"unit" binding:"required"`
+		Material  string  `json:"material" binding:"required"`
+		Tservicio string  `json:"tservicio" binding:"required"`
+		Price     float64 `json:"price" binding:"required"`
+	}
 
-type priceList struct {
-	List    string   `json:"list" binding:"required"`
-	Owner   string   `json:"owner" binding:"required"`
-	Targets []string `json:"targets" binding:"required"`
-	Prices  []price  `json:"prices" binding:"required"`
-}
+	priceList struct {
+		List    string   `json:"list" binding:"required"`
+		Owner   string   `json:"owner" binding:"required"`
+		Targets []string `json:"targets" binding:"required"`
+		Prices  []price  `json:"prices" binding:"required"`
+	}
+)
 
 func CreateList(c *gin.Context) {
 
