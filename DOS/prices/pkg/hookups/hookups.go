@@ -1,12 +1,13 @@
 package hookups
 
 import (
-	"blaucorp.com/prices/internal/rest"
+
 )
 
-func CalisServer() {
+type (
+        PricesManager struct {}
+)
 
-	r := rest.GetEngine()
-	rest.SetHandlers(r)
-	r.Run() // listen and serve on 0.0.0.0:8080
+func NewPricesManager() {
+        return &NewPricesManager{}
 }
