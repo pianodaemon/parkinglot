@@ -55,3 +55,8 @@ func (self *PricesManager) DoEditPrice(listName, sku, unit, material, tservicio 
 	db := self.mcli.Database(self.dbID)
 	return dal.EditPrice(db, listName, sku, unit, material, tservicio, price)
 }
+
+func (self *PricesManager) DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error) {
+	db := self.mcli.Database(self.dbID)
+	return dal.GetListsByOwnerAndTargets(db, owner, targets)
+}
