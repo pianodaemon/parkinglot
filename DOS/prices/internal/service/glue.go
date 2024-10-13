@@ -1,8 +1,6 @@
 package service
 
 import (
-	"net/http"
-
 	co "blaucorp.com/prices/internal/controllers"
 	hups "blaucorp.com/prices/pkg/hookups"
 
@@ -30,12 +28,7 @@ func Engage() (merr error) {
 
 func setUpHandlers(r *gin.Engine, pm *hups.PricesManager) {
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-
+	r.GET("/ping", co.Health)
 	r.POST("/price-lists", co.CreateList(pm))
 	r.PUT("/prices", co.UpdatePrice(pm))
 }
