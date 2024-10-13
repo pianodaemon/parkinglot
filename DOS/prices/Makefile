@@ -1,7 +1,7 @@
 GOCMD=go
 GOBUILD=$(GOCMD) build -ldflags="-w -s" 
 
-PRICES_EXE=./fiscal
+PRICES_EXE=./prices_launcher
 
 all: build
 

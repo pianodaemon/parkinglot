@@ -1,9 +1,10 @@
 package main
 
 import (
-	hups "blaucorp.com/prices/pkg/hookups"
+	platform "blaucorp.com/prices/internal/service"
 )
 
 func main() {
-	hups.CalisServer()
+
+	platform.Engage()
 }
