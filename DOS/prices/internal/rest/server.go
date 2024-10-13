@@ -66,4 +66,6 @@ func SetHandlers(r *gin.Engine) {
 			"results": "ok",
 		})
 	})
+
+	r.PUT("/update", co.UpdatePrice)
 }

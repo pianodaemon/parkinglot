@@ -27,6 +27,11 @@ type (
 		Targets []string `json:"targets" binding:"required"`
 		Prices  []price  `json:"prices" binding:"required"`
 	}
+
+	priceUpdateRequest struct {
+		price        // Embedding price to inherit its fields
+		List  string `json:"list" binding:"required"`
+	}
 )
 
 func CreateList(c *gin.Context) {
@@ -70,4 +75,38 @@ func CreateList(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"results": "ok",
 	})
+}
+
+func UpdatePrice(c *gin.Context) {
+	var req priceUpdateRequest
+
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
+		return
+	}
+
+	// Connect to MongoDB
+	mongoURI := fmt.Sprintf("mongodb://user:123qwe@%s:%s/", "localhost", "27017")
+	var client *mongo.Client
+	err := dal.SetUpConnMongoDB(&client, mongoURI)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to connect to database"})
+		return
+	}
+
+	db := client.Database("pricing_db")
+
+	// Edit the price using dal.AddOrUpdatePrice
+	err = dal.AddOrUpdatePrice(db, req.List, req.Sku, req.Unit, req.Material, req.Tservicio, req.Price)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update price"})
+		return
+	}
+
+	// Disconnect MongoDB client
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	client.Disconnect(ctx)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Price updated successfully"})
 }
