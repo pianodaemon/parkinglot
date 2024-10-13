@@ -32,18 +32,18 @@ func NewPricesManager() *PricesManager {
 }
 
 func (self *PricesManager) DoCreatePriceList(listName, owner string) error {
-	// Pending implementation
-	return nil
+	db := self.mcli.Database(self.dbID)
+	return dal.CreatePriceList(db, listName, owner)
 }
 
 func (self *PricesManager) DoDeleteList(listName string) error {
-	// Pending implementation
-	return nil
+	db := self.mcli.Database(self.dbID)
+	return dal.DeleteList(db, listName)
 }
 
 func (self *PricesManager) DoAssignTargets(listName string, targets []string) error {
-	// Pending implementation
-	return nil
+	db := self.mcli.Database(self.dbID)
+	return dal.AssignTargets(db, listName, targets)
 }
 
 func (self *PricesManager) DoUpdatePrice(listName, sku, unit, material, tservicio string, price float64) error {
