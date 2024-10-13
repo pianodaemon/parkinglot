@@ -91,3 +91,26 @@ func DeleteList(db *mongo.Database, listName string) error {
 
 	return nil
 }
+
+// EditPrice updates the price for a given hash.
+func EditPrice(db *mongo.Database, hash string, newPrice float64) error {
+	ctx := context.TODO()
+	priceCollection := db.Collection("prices")
+
+	// Find the document with the given hash
+	filter := bson.M{"hash": hash}
+	update := bson.M{"$set": bson.M{"price": newPrice}}
+
+	// Update the price
+	result, err := priceCollection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("failed to update price: %v", err)
+	}
+
+	if result.MatchedCount == 0 {
+		return fmt.Errorf("no price found with hash: %s", hash)
+	}
+
+	fmt.Printf("Updated price for hash '%s' to %.2f\n", hash, newPrice)
+	return nil
+}
