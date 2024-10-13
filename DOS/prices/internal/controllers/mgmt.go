@@ -31,7 +31,7 @@ type (
 	}
 )
 
-func CreateList(pricesManagerImplt *hups.PricesManager) func(c *gin.Context) {
+func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 
@@ -60,7 +60,7 @@ func CreateList(pricesManagerImplt *hups.PricesManager) func(c *gin.Context) {
 	}
 }
 
-func UpdatePrice(pricesManagerImplt *hups.PricesManager) func(c *gin.Context) {
+func UpdatePrice(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		var req priceUpdateRequest
