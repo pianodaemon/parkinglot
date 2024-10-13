@@ -1,13 +1,11 @@
 package hookups
 
-import (
-
-)
+import ()
 
 type (
-        PricesManager struct {}
+	PricesManager struct{}
 )
 
-func NewPricesManager() {
-        return &NewPricesManager{}
+func NewPricesManager() *PricesManager {
+	return &PricesManager{}
 }
