@@ -9,10 +9,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
-// Sets a mongo connection up
+// Sets up a MongoDB connection with a pool of connections
 func SetUpConnMongoDB(mcli **mongo.Client, uri string) error {
-	// Connect to MongoDB
-	clientOptions := options.Client().ApplyURI(uri)
+	// Define connection pool options
+	clientOptions := options.Client().
+		ApplyURI(uri).
+		SetMaxPoolSize(20).                  // Maximum number of connections in the pool
+		SetMinPoolSize(5).                   // Minimum number of connections in the pool
+		SetMaxConnIdleTime(10 * time.Minute) // Connection idle time before closing
+
+	// Connect to MongoDB with a timeout
 	ctxConn, cancelConn := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancelConn()
 
