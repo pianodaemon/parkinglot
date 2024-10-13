@@ -32,49 +32,39 @@ type (
 		price        // Embedding price to inherit its fields
 		List  string `json:"list" binding:"required"`
 	}
+
+	DoAssignTargetsHandler   func(listName string, targets []string) error
+	DoCreatePriceListHandler func(listName, owner string) error
+	DoUpdatePriceHandler     func(listName, sku, unit, material, tservicio string, price float64) error
 )
 
-func CreateList(c *gin.Context) {
+func CreateList(dclh DoCreatePriceListHandler, dath DoAssignTargetsHandler, duph DoUpdatePriceHandler) func(c *gin.Context) {
 
-	reqPriceList := priceList{}
+	return func(c *gin.Context) {
 
-	if errP := c.ShouldBind(&reqPriceList); errP != nil {
-		c.String(http.StatusBadRequest, "the body should be form of priceList type")
-		return
+		reqPriceList := priceList{}
+
+		if errP := c.ShouldBind(&reqPriceList); errP != nil {
+			c.String(http.StatusBadRequest, "the body should be form of priceList type")
+			return
+		}
+
+		err := dclh(reqPriceList.List, reqPriceList.Owner)
+		if err != nil {
+			panic(err.Error())
+		}
+		dath(reqPriceList.List, reqPriceList.Targets)
+
+		// Add fake prices
+		for _, price := range reqPriceList.Prices {
+			duph(reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
+		}
+
+		fmt.Println("-------> body: ", reqPriceList)
+		c.JSON(http.StatusOK, gin.H{
+			"results": "ok",
+		})
 	}
-	// Connect to MongoDB
-	mongoURI := fmt.Sprintf("mongodb://user:123qwe@%s:%s/", "localhost", "27017")
-	var client *mongo.Client
-	err := dal.SetUpConnMongoDB(&client, mongoURI)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	db := client.Database("pricing_db")
-
-	// Populate the data
-	err = dal.CreatePriceList(db, reqPriceList.List, reqPriceList.Owner)
-	if err != nil {
-		panic(err.Error())
-	}
-	dal.AssignTargets(db, reqPriceList.List, reqPriceList.Targets)
-
-	// Add fake prices
-	for _, price := range reqPriceList.Prices {
-		dal.AddPrice(db, reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
-	}
-
-	ctx, cancelDisconn := context.WithTimeout(context.Background(), 2*time.Second)
-	client.Disconnect(ctx)
-
-	/* It'll be even called if succeeded just to
-	   release resources of timing */
-	defer cancelDisconn()
-
-	fmt.Println("-------> body: ", reqPriceList)
-	c.JSON(http.StatusOK, gin.H{
-		"results": "ok",
-	})
 }
 
 func UpdatePrice(c *gin.Context) {
