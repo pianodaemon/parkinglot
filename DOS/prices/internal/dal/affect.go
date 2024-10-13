@@ -6,6 +6,7 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"blaucorp.com/prices/internal/misc"
 )
@@ -112,5 +113,38 @@ func EditPrice(db *mongo.Database, hash string, newPrice float64) error {
 	}
 
 	fmt.Printf("Updated price for hash '%s' to %.2f\n", hash, newPrice)
+	return nil
+}
+
+// Add or update a price to the list
+func AddOrUpdatePrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) error {
+	priceCollection := db.Collection("prices")
+	priceTuple := map[string]string{
+		"list":      listName,
+		"sku":       sku,
+		"unit":      unit,
+		"material":  material,
+		"tservicio": tservicio,
+	}
+	priceHash := misc.GenerateHash(priceTuple)
+
+	// Define the filter to match the price based on the hash
+	filter := bson.D{{"hash", priceHash}}
+
+	// Define the update to set the price and tuple data
+	update := bson.D{
+		{"$set", bson.D{
+			{"tuple", priceTuple},
+			{"hash", priceHash},
+			{"price", price},
+		}},
+	}
+
+	// Perform an upsert (update or insert if it doesn't exist)
+	_, err := priceCollection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -107,7 +107,7 @@ func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 	}
 
 	for _, p := range prices {
-		err = dal.AddPrice(db, listName, p.sku, p.unit, p.material, p.tservicio, p.price)
+		err = dal.AddOrUpdatePrice(db, listName, p.sku, p.unit, p.material, p.tservicio, p.price)
 		if err != nil {
 			t.Fatalf("Failed to add price %v: %s", p, err)
 		}
