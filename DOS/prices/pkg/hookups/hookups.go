@@ -10,6 +10,7 @@ import (
 
 type (
 	PricesManager struct {
+		dbID string
 		mcli *mongo.Client
 	}
 )
@@ -17,6 +18,8 @@ type (
 func NewPricesManager() *PricesManager {
 
 	pm := &PricesManager{}
+
+	pm.dbID = "pricing_db"
 
 	// Connect to MongoDB along with pool of connections
 	mongoURI := fmt.Sprintf("mongodb://user:123qwe@%s:%s/", "localhost", "27017")
@@ -44,6 +47,6 @@ func (self *PricesManager) DoAssignTargets(listName string, targets []string) er
 }
 
 func (self *PricesManager) DoUpdatePrice(listName, sku, unit, material, tservicio string, price float64) error {
-	// Pending implementation
-	return nil
+	db := self.mcli.Database(self.dbID)
+	return dal.AddOrUpdatePrice(db, listName, sku, unit, material, tservicio, price)
 }
