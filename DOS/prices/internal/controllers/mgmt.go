@@ -50,7 +50,7 @@ func CreateList(pricesManagerImplt *hups.PricesManager) func(c *gin.Context) {
 
 		// Add fake prices
 		for _, price := range reqPriceList.Prices {
-			pricesManagerImplt.DoEditPrice(reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
+			pricesManagerImplt.DoAddPrice(reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
 		}
 
 		fmt.Println("-------> body: ", reqPriceList)
