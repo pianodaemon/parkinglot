@@ -93,7 +93,7 @@ func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 			t.Fatalf("The list was just created but it is not found %s", listName)
 		}
 	} else {
-		t.Fatalf("list not retrieved : %s", err)
+		t.Fatalf("List not retrieved: %s", err)
 	}
 
 	// Adding prices
@@ -113,6 +113,7 @@ func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 		}
 	}
 
+	// Verify initial prices
 	testCases := []struct {
 		priceTuple    map[string]string
 		expectedPrice float64
@@ -160,7 +161,49 @@ func verifyPrices(t *testing.T, db *mongo.Database, listName string) {
 		}
 	}
 
-	log.Println("Price verification completed successfully")
+	log.Println("Initial price verification completed successfully")
+
+	// **Price Edition Section**
+	// Define updated prices
+	updatedPrices := []struct {
+		sku, unit, material, tservicio string
+		newPrice                       float64
+	}{
+		{"1254-545-66", "m3", "madera", "limpia", 16.00},  // Updated from 15.50 to 16.00
+		{"7845-155-78", "kg", "hierro", "sucia", 26.50},   // Updated from 25.75 to 26.50
+		{"9987-845-23", "lt", "agua", "purificada", 4.00}, // Updated from 3.80 to 4.00
+	}
+
+	// Update prices
+	for _, p := range updatedPrices {
+		err = dal.AddOrUpdatePrice(db, listName, p.sku, p.unit, p.material, p.tservicio, p.newPrice)
+		if err != nil {
+			t.Fatalf("Failed to update price %v: %s", p, err)
+		}
+	}
+
+	// Verify updated prices
+	for _, test := range updatedPrices {
+		priceTuple := map[string]string{
+			"list":      listName,
+			"sku":       test.sku,
+			"unit":      test.unit,
+			"material":  test.material,
+			"tservicio": test.tservicio,
+		}
+		retrievedPrice, err := dal.RetrievePriceByTuple(db, priceTuple)
+		if err != nil {
+			t.Fatalf("Failed to retrieve updated price for tuple %+v: %s", priceTuple, err)
+		}
+
+		if retrievedPrice != test.newPrice {
+			t.Fatalf("Expected updated price %.2f for tuple %+v, got %.2f", test.newPrice, priceTuple, retrievedPrice)
+		}
+
+		log.Printf("Price updated successfully for tuple %+v: %.2f\n", priceTuple, retrievedPrice)
+	}
+
+	log.Println("Price edition verification completed successfully")
 }
 
 // Helper function to verify deletion in the database
