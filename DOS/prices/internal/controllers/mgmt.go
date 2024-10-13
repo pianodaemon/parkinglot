@@ -35,10 +35,10 @@ type (
 
 	DoAssignTargetsHandler   func(listName string, targets []string) error
 	DoCreatePriceListHandler func(listName, owner string) error
-	DoUpdatePriceHandler     func(listName, sku, unit, material, tservicio string, price float64) error
+	DoEditPriceHandler       func(listName, sku, unit, material, tservicio string, price float64) error
 )
 
-func CreateList(dclh DoCreatePriceListHandler, dath DoAssignTargetsHandler, duph DoUpdatePriceHandler) func(c *gin.Context) {
+func CreateList(dclh DoCreatePriceListHandler, dath DoAssignTargetsHandler, duph DoEditPriceHandler) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 
@@ -87,7 +87,7 @@ func UpdatePrice(c *gin.Context) {
 	db := client.Database("pricing_db")
 
 	// Edit the price using dal.AddOrUpdatePrice
-	err = dal.AddOrUpdatePrice(db, req.List, req.Sku, req.Unit, req.Material, req.Tservicio, req.Price)
+	err = dal.EditPrice(db, req.List, req.Sku, req.Unit, req.Material, req.Tservicio, req.Price)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update price"})
 		return

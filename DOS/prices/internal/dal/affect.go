@@ -2,11 +2,11 @@ package dal
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"blaucorp.com/prices/internal/misc"
 )
@@ -93,31 +93,7 @@ func DeleteList(db *mongo.Database, listName string) error {
 	return nil
 }
 
-// EditPrice updates the price for a given hash.
-func EditPrice(db *mongo.Database, hash string, newPrice float64) error {
-	ctx := context.TODO()
-	priceCollection := db.Collection("prices")
-
-	// Find the document with the given hash
-	filter := bson.M{"hash": hash}
-	update := bson.M{"$set": bson.M{"price": newPrice}}
-
-	// Update the price
-	result, err := priceCollection.UpdateOne(ctx, filter, update)
-	if err != nil {
-		return fmt.Errorf("failed to update price: %v", err)
-	}
-
-	if result.MatchedCount == 0 {
-		return fmt.Errorf("no price found with hash: %s", hash)
-	}
-
-	fmt.Printf("Updated price for hash '%s' to %.2f\n", hash, newPrice)
-	return nil
-}
-
-// Add or update a price to the list
-func AddOrUpdatePrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) error {
+func EditPrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) error {
 	priceCollection := db.Collection("prices")
 	priceTuple := map[string]string{
 		"list":      listName,
@@ -131,7 +107,18 @@ func AddOrUpdatePrice(db *mongo.Database, listName, sku, unit, material, tservic
 	// Define the filter to match the price based on the hash
 	filter := bson.D{{"hash", priceHash}}
 
-	// Define the update to set the price and tuple data
+	// Check if the document exists
+	var existingDoc bson.M
+	err := priceCollection.FindOne(context.TODO(), filter).Decode(&existingDoc)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			// Document does not exist, handle the error (or insert if needed)
+			return errors.New("price document not found")
+		}
+		return err
+	}
+
+	// Document exists, perform the update
 	update := bson.D{
 		{"$set", bson.D{
 			{"tuple", priceTuple},
@@ -140,8 +127,7 @@ func AddOrUpdatePrice(db *mongo.Database, listName, sku, unit, material, tservic
 		}},
 	}
 
-	// Perform an upsert (update or insert if it doesn't exist)
-	_, err := priceCollection.UpdateOne(context.TODO(), filter, update, options.Update().SetUpsert(true))
+	_, err = priceCollection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return err
 	}

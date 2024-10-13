@@ -46,7 +46,7 @@ func (self *PricesManager) DoAssignTargets(listName string, targets []string) er
 	return dal.AssignTargets(db, listName, targets)
 }
 
-func (self *PricesManager) DoUpdatePrice(listName, sku, unit, material, tservicio string, price float64) error {
+func (self *PricesManager) DoEditPrice(listName, sku, unit, material, tservicio string, price float64) error {
 	db := self.mcli.Database(self.dbID)
-	return dal.AddOrUpdatePrice(db, listName, sku, unit, material, tservicio, price)
+	return dal.EditPrice(db, listName, sku, unit, material, tservicio, price)
 }
