@@ -36,6 +36,6 @@ func setUpHandlers(r *gin.Engine, pm *hups.PricesManager) {
 		})
 	})
 
-	r.POST("/price-lists", co.CreateList(pm.DoCreatePriceList, pm.DoAssignTargets, pm.DoEditPrice))
+	r.POST("/price-lists", co.CreateList(pm))
 	r.PUT("/prices", co.UpdatePrice)
 }

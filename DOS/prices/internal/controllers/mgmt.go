@@ -9,6 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 
 	"blaucorp.com/prices/internal/dal"
+	hups "blaucorp.com/prices/pkg/hookups"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,13 +34,9 @@ type (
 		price        // Embedding price to inherit its fields
 		List  string `json:"list" binding:"required"`
 	}
-
-	DoAssignTargetsHandler   func(listName string, targets []string) error
-	DoCreatePriceListHandler func(listName, owner string) error
-	DoEditPriceHandler       func(listName, sku, unit, material, tservicio string, price float64) error
 )
 
-func CreateList(dclh DoCreatePriceListHandler, dath DoAssignTargetsHandler, duph DoEditPriceHandler) func(c *gin.Context) {
+func CreateList(pricesManagerImplt *hups.PricesManager) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 
@@ -49,15 +47,15 @@ func CreateList(dclh DoCreatePriceListHandler, dath DoAssignTargetsHandler, duph
 			return
 		}
 
-		err := dclh(reqPriceList.List, reqPriceList.Owner)
+		err := pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner)
 		if err != nil {
 			panic(err.Error())
 		}
-		dath(reqPriceList.List, reqPriceList.Targets)
+		pricesManagerImplt.DoAssignTargets(reqPriceList.List, reqPriceList.Targets)
 
 		// Add fake prices
 		for _, price := range reqPriceList.Prices {
-			duph(reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
+			pricesManagerImplt.DoEditPrice(reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
 		}
 
 		fmt.Println("-------> body: ", reqPriceList)
