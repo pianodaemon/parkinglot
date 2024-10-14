@@ -76,7 +76,7 @@ Here's a breakdown of the collections:
 
 - **RESTful API**: Exposes APIs to retrieve and update prices and price lists.
 
-### Create price list
+#### Create price list
 
 POST
 
@@ -125,7 +125,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
 ```
 
 
-### Add newer price to the list
+#### Add newer price to the list
 
 POST
 
@@ -140,3 +140,22 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
     "tservicio": "destruccion",
     "price": 2222.99
 }'
+```
+
+#### Update price from a list
+
+PUT
+
+```sh
+
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/prices' \
+--header 'Content-Type: application/json' \
+--data '{
+    "list": "winter-1728533139",
+    "sku": "84738-382777",
+    "unit": "m3",
+    "material": "aluminio",
+    "tservicio": "recoleccion",
+    "price": 10099.99
+}'
+```
