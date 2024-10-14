@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"blaucorp.com/prices/internal/misc"
 	hups "blaucorp.com/prices/pkg/hookups"
 
 	"github.com/gin-gonic/gin"
@@ -41,6 +42,8 @@ func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Cont
 			c.String(http.StatusBadRequest, "the body should be form of priceList type")
 			return
 		}
+
+		reqPriceList.List = misc.GenerateNameWithTimestamp(reqPriceList.List)
 
 		err := pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner)
 		if err != nil {
