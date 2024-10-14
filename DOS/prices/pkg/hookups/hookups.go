@@ -69,7 +69,6 @@ func (self *PricesManager) DoEditPrice(listName, sku, unit, material, tservicio 
 }
 
 func (self *PricesManager) DoRetrievePriceByTuple(priceTuple map[string]string) (float64, error) {
-
 	db := self.mcli.Database(self.dbID)
 	return dal.RetrievePriceByTuple(db, priceTuple)
 }
