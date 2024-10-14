@@ -171,6 +171,15 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
 'localhost:8080/prices?list=winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
 ```
 
+**Explanation**:
+
+-   This `GET` request retrieves the price for the item in the price list `winter-1728533139` with the following attributes:
+    -   `sku`: 84738-382777
+    -   `unit`: m3
+    -   `material`: aluminio
+    -   `tservicio`: recoleccion
+-   The price for this specific combination of attributes will be returned.
+
 #### Get lists from intersection of owner and targets
 
 GET: This command retrieves the price lists that belong to a specific owner and are shared with specific targets.
