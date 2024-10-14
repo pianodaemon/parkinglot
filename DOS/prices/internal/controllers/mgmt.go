@@ -105,3 +105,22 @@ func RetrievePriceByTuple(pricesManagerImplt hups.PricesManagerInterface) func(c
 		c.JSON(http.StatusOK, gin.H{"precio": fmt.Sprintf("%.2f", priceVal)})
 	}
 }
+
+func AddPriceToList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+
+	return func(c *gin.Context) {
+		var req priceUpdateRequest
+
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request format"})
+			return
+		}
+
+		if err := pricesManagerImplt.DoAddPrice(req.List, req.Sku, req.Unit, req.Material, req.Tservicio, req.Price); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add price"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "Price added successfully"})
+	}
+}
