@@ -167,7 +167,8 @@ GET
 
 ```sh
 
-pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices?list=winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
+'localhost:8080/prices?list=winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
 ```
 
 #### Get lists from intersection of owner and targets
@@ -176,5 +177,6 @@ GET
 
 ```sh
 
-pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists?owner=viajes%20Ponchito&targets=coca&targets=pepsi'
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
+'localhost:8080/price-lists?owner=viajes%20Ponchito&targets=coca&targets=pepsi'
 ```
