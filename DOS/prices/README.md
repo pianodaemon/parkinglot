@@ -180,3 +180,8 @@ GET: This command retrieves the price lists that belong to a specific owner and 
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
 'localhost:8080/price-lists?owner=viajes%20Ponchito&targets=coca&targets=pepsi'
 ```
+
+**Explanation**:
+
+-   This `GET` request retrieves all price lists owned by `viajes Ponchito` that are shared with both `coca` and `pepsi`.
+-   The `owner` and `targets` parameters are used to filter the lists.
