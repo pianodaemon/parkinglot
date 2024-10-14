@@ -75,3 +75,53 @@ Here's a breakdown of the collections:
 ## Key Features
 
 - **RESTful API**: Exposes APIs to retrieve and update prices and price lists.
+
+### Create price list
+
+POST
+
+```sh
+
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
+--header 'Content-Type: application/json' \
+--data '{
+    "list": "winter-17285114222",
+    "owner": "viajes Ponchito",
+    "targets": [
+        "coca",
+        "pepsi"
+    ],
+    "prices": [
+        {
+            "sku": "123123-222",
+            "unit": "m3",
+            "material": "madera",
+            "tservicio": "recoleccion",
+            "price": 99.99
+        },
+        {
+            "sku": "2345-987999",
+            "unit": "litros",
+            "material": "vidrio",
+            "tservicio": "limpia",
+            "price": 1500.00
+        },
+        {
+            "sku": "84738-382777",
+            "unit": "m3",
+            "material": "aluminio",
+            "tservicio": "recoleccion",
+            "price": 2.99
+        },
+        {
+            "sku": "84738-3820000",
+            "unit": "litros",
+            "material": "energon",
+            "tservicio": "quema",
+            "price": 111.11
+        }
+    ]
+}'
+```
+
+
