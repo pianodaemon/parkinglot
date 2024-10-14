@@ -15,7 +15,7 @@ import (
 func CreatePriceList(db *mongo.Database, listName, owner string) error {
 	priceListCollection := db.Collection("price_lists")
 	priceList := bson.D{
-		{"list", listName},
+		{"list", misc.GenerateNameWithTimestamp(listName)},
 		{"owner", owner},
 	}
 	_, err := priceListCollection.InsertOne(context.TODO(), priceList)
