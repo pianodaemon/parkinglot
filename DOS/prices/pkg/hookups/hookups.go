@@ -17,7 +17,7 @@ type (
 		DoAssignTargets(listName string, targets []string) error
 		DoAddPrice(listName, sku, unit, material, tservicio string, price float64) error
 		DoEditPrice(listName, sku, unit, material, tservicio string, price float64) error
-		RetrievePriceByTuple(priceTuple map[string]string) (float64, error)
+		DoRetrievePriceByTuple(priceTuple map[string]string) (float64, error)
 		DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error)
 	}
 
@@ -68,7 +68,7 @@ func (self *PricesManager) DoEditPrice(listName, sku, unit, material, tservicio 
 	return dal.EditPrice(db, listName, sku, unit, material, tservicio, price)
 }
 
-func (self *PricesManager) RetrievePriceByTuple(priceTuple map[string]string) (float64, error) {
+func (self *PricesManager) DoRetrievePriceByTuple(priceTuple map[string]string) (float64, error) {
 
 	db := self.mcli.Database(self.dbID)
 	return dal.RetrievePriceByTuple(db, priceTuple)
