@@ -72,9 +72,9 @@ Here's a breakdown of the collections:
     -   The `price` field stores the actual price of the item.
 
 
-## Key Features
+## How to use it
 
-- **RESTful API**: Exposes APIs to retrieve and update prices and price lists.
+The following examples demonstrate how to create, update, retrieve, and manage price lists and their associated prices via the sidecar program's REST API.
 
 ### Create price list
 
