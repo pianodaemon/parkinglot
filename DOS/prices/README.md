@@ -72,13 +72,13 @@ Here's a breakdown of the collections:
     -   The `price` field stores the actual price of the item.
 
 
-## Key Features
+## How to use it
 
-- **RESTful API**: Exposes APIs to retrieve and update prices and price lists.
+The following examples demonstrate how to create, update, retrieve, and manage price lists and their associated prices via the sidecar program's REST API.
 
-#### Create price list
+### Create price list
 
-POST: This command creates a new price list for a specific owner with associated targets and prices.
+This command creates a new price list for a specific owner with associated targets and prices.
 
 ```sh
 
@@ -123,11 +123,16 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
     ]
 }'
 ```
+**Explanation**:
 
+-   This `POST` request creates a new price list called `winter`, owned by `viajes Ponchito`.
+-   The list is shared with two targets: `coca` and `pepsi`.
+-   Four prices are added, each corresponding to a different combination of attributes like `sku`, `unit`, `material`, and `tservicio`.
+-   Each price is assigned a specific value under the `price` field, allowing for granular control over the pricing of different items.
 
-#### Add newer price to the list
+### Add newer price to the list
 
-POST: This command adds a new price to an existing price list.
+This command adds a new price to an existing price list.
 
 ```sh
 
@@ -141,10 +146,15 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
     "price": 2222.99
 }'
 ```
+**Explanation**:
 
-#### Update price from a list
+-   This `POST` request adds a new price for the item with `sku` 84738-382888 to the price list `winter-1728533139`.
+-   The item has attributes such as `unit` (m3), `material` (radiactivo), and `tservicio` (destruccion).
+-   The price for this item is set to `2222.99`.
 
-PUT: This command updates an existing price within a price list.
+### Update price from a list
+
+This command updates an existing price within a price list.
 
 ```sh
 
@@ -159,11 +169,14 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/pri
     "price": 10099.99
 }'
 ```
+**Explanation**:
 
+-   This `PUT` request updates the price for the item with `sku` 84738-382777 in the list `winter-1728533139`.
+-   The price for this combination of `unit`, `material`, and `tservicio` is updated to `10099.99`.
 
-#### Retrieve price by tuple
+### Retrieve price by tuple
 
-GET: This command retrieves the price for a specific item based on its tuple.
+This command retrieves the price for a specific item based on its tuple.
 
 ```sh
 
@@ -171,12 +184,26 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
 'localhost:8080/prices?list=winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
 ```
 
-#### Get lists from intersection of owner and targets
+**Explanation**:
 
-GET: This command retrieves the price lists that belong to a specific owner and are shared with specific targets.
+-   This `GET` request retrieves the price for the item in the price list `winter-1728533139` with the following attributes:
+    -   `sku`: 84738-382777
+    -   `unit`: m3
+    -   `material`: aluminio
+    -   `tservicio`: recoleccion
+-   The price for this specific combination of attributes will be returned.
+
+### Get lists from intersection of owner and targets
+
+This command retrieves the price lists that belong to a specific owner and are shared with specific targets.
 
 ```sh
 
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
 'localhost:8080/price-lists?owner=viajes%20Ponchito&targets=coca&targets=pepsi'
 ```
+
+**Explanation**:
+
+-   This `GET` request retrieves all price lists owned by `viajes Ponchito` that are shared with both `coca` and `pepsi`.
+-   The `owner` and `targets` parameters are used to filter the lists.
