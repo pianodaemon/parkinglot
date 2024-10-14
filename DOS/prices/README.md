@@ -132,7 +132,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
 
 ### Add newer price to the list
 
-POST: This command adds a new price to an existing price list.
+This command adds a new price to an existing price list.
 
 ```sh
 
@@ -146,6 +146,11 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
     "price": 2222.99
 }'
 ```
+**Explanation**:
+
+-   This `POST` request adds a new price for the item with `sku` 84738-382888 to the price list `winter-1728533139`.
+-   The item has attributes such as `unit` (m3), `material` (radiactivo), and `tservicio` (destruccion).
+-   The price for this item is set to `2222.99`.
 
 ### Update price from a list
 
