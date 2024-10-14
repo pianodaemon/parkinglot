@@ -20,12 +20,12 @@ func RetrievePriceByTuple(db *mongo.Database, priceTuple map[string]string) (flo
 	var result bson.M
 	err := priceCollection.FindOne(context.TODO(), filter).Decode(&result)
 	if err != nil {
-		return 0, err
+		return 0, fmt.Errorf("price not found")
 	}
 
 	price, ok := result["price"].(float64)
 	if !ok {
-		return 0, fmt.Errorf("price not found or invalid type")
+		return 0, fmt.Errorf("invalid type")
 	}
 
 	return price, nil

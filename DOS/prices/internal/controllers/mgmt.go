@@ -78,3 +78,30 @@ func UpdatePrice(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Con
 		c.JSON(http.StatusOK, gin.H{"message": "Price updated successfully"})
 	}
 }
+
+func RetrievePriceByTuple(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+
+	return func(c *gin.Context) {
+		list := c.Query("list")
+		sku := c.Query("sku")
+		unit := c.Query("unit")
+		material := c.Query("material")
+		tservicio := c.Query("tservicio")
+
+		priceTupl := map[string]string{
+			"list":      list,
+			"sku":       sku,
+			"unit":      unit,
+			"material":  material,
+			"tservicio": tservicio,
+		}
+
+		priceVal, err := pricesManagerImplt.RetrievePriceByTuple(priceTupl)
+		if err != nil {
+			c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"precio": fmt.Sprintf("%.2f", priceVal)})
+	}
+}

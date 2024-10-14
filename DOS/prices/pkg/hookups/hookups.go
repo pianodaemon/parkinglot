@@ -17,6 +17,7 @@ type (
 		DoAssignTargets(listName string, targets []string) error
 		DoAddPrice(listName, sku, unit, material, tservicio string, price float64) error
 		DoEditPrice(listName, sku, unit, material, tservicio string, price float64) error
+		RetrievePriceByTuple(priceTuple map[string]string) (float64, error)
 		DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error)
 	}
 
