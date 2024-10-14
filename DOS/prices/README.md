@@ -159,3 +159,13 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/pri
     "price": 10099.99
 }'
 ```
+
+
+#### Retrieve price by tuple
+
+GET
+
+```sh
+
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl--location 'localhost:8080/prices?list=winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
+```
