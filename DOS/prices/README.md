@@ -78,7 +78,7 @@ Here's a breakdown of the collections:
 
 ### Create price list
 
-POST: This command creates a new price list for a specific owner with associated targets and prices.
+This command creates a new price list for a specific owner with associated targets and prices.
 
 ```sh
 
@@ -168,7 +168,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/pri
 
 ### Retrieve price by tuple
 
-GET: This command retrieves the price for a specific item based on its tuple.
+This command retrieves the price for a specific item based on its tuple.
 
 ```sh
 
@@ -187,7 +187,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
 
 ### Get lists from intersection of owner and targets
 
-GET: This command retrieves the price lists that belong to a specific owner and are shared with specific targets.
+This command retrieves the price lists that belong to a specific owner and are shared with specific targets.
 
 ```sh
 
