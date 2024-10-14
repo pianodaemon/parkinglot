@@ -125,3 +125,18 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
 ```
 
 
+### Add newer price to the list
+
+POST
+
+```sh
+
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
+--data '{
+    "list": "winter-1728533139",
+    "sku": "84738-382888",
+    "unit": "m3",
+    "material": "radiactivo",
+    "tservicio": "destruccion",
+    "price": 2222.99
+}'
