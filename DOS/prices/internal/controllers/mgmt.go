@@ -130,7 +130,6 @@ func GetListsByOwnerAndTargets(pricesManagerImplt hups.PricesManagerInterface) f
 	return func(c *gin.Context) {
 		reqOwner := c.Query("owner")
 		reqTargets := c.QueryArray("targets")
-		fmt.Println(reqOwner, reqTargets)
 
 		lists, err := pricesManagerImplt.DoGetListsByOwnerAndTargets(reqOwner, reqTargets)
 		if err != nil {
