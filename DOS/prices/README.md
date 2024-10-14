@@ -154,7 +154,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
 
 ### Update price from a list
 
-PUT: This command updates an existing price within a price list.
+This command updates an existing price within a price list.
 
 ```sh
 
@@ -169,7 +169,10 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/pri
     "price": 10099.99
 }'
 ```
+**Explanation**:
 
+-   This `PUT` request updates the price for the item with `sku` 84738-382777 in the list `winter-1728533139`.
+-   The price for this combination of `unit`, `material`, and `tservicio` is updated to `10099.99`.
 
 ### Retrieve price by tuple
 
