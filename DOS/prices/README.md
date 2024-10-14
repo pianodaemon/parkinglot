@@ -85,7 +85,7 @@ POST
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
 --header 'Content-Type: application/json' \
 --data '{
-    "list": "winter-17285114222",
+    "list": "winter",
     "owner": "viajes Ponchito",
     "targets": [
         "coca",
