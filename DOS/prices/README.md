@@ -76,7 +76,7 @@ Here's a breakdown of the collections:
 
 - **RESTful API**: Exposes APIs to retrieve and update prices and price lists.
 
-#### Create price list
+### Create price list
 
 POST: This command creates a new price list for a specific owner with associated targets and prices.
 
@@ -123,9 +123,14 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
     ]
 }'
 ```
+**Explanation**:
 
+-   This `POST` request creates a new price list called `winter`, owned by `viajes Ponchito`.
+-   The list is shared with two targets: `coca` and `pepsi`.
+-   Four prices are added, each corresponding to a different combination of attributes like `sku`, `unit`, `material`, and `tservicio`.
+-   Each price is assigned a specific value under the `price` field, allowing for granular control over the pricing of different items.
 
-#### Add newer price to the list
+### Add newer price to the list
 
 POST: This command adds a new price to an existing price list.
 
@@ -142,7 +147,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
 }'
 ```
 
-#### Update price from a list
+### Update price from a list
 
 PUT: This command updates an existing price within a price list.
 
@@ -161,7 +166,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/pri
 ```
 
 
-#### Retrieve price by tuple
+### Retrieve price by tuple
 
 GET: This command retrieves the price for a specific item based on its tuple.
 
@@ -180,7 +185,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
     -   `tservicio`: recoleccion
 -   The price for this specific combination of attributes will be returned.
 
-#### Get lists from intersection of owner and targets
+### Get lists from intersection of owner and targets
 
 GET: This command retrieves the price lists that belong to a specific owner and are shared with specific targets.
 
