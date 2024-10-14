@@ -124,3 +124,20 @@ func AddPriceToList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.
 		c.JSON(http.StatusOK, gin.H{"message": "Price added successfully"})
 	}
 }
+
+func GetListsByOwnerAndTargets(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+
+	return func(c *gin.Context) {
+		reqOwner := c.Query("owner")
+		reqTargets := c.QueryArray("targets")
+		fmt.Println(reqOwner, reqTargets)
+
+		lists, err := pricesManagerImplt.DoGetListsByOwnerAndTargets(reqOwner, reqTargets)
+		if err != nil {
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"lists": lists})
+	}
+}

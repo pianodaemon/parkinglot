@@ -33,4 +33,5 @@ func setUpHandlers(r *gin.Engine, pm *hups.PricesManager) {
 	r.PUT("/prices", co.UpdatePrice(pm))
 	r.GET("/prices", co.RetrievePriceByTuple(pm))
 	r.POST("/prices", co.AddPriceToList(pm))
+	r.GET("/price-lists", co.GetListsByOwnerAndTargets(pm))
 }

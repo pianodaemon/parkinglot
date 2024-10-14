@@ -84,5 +84,9 @@ func GetListsByOwnerAndTargets(db *mongo.Database, owner string, targets []strin
 		return nil, fmt.Errorf("error occurred during cursor iteration: %v", err)
 	}
 
+	if len(lists) == 0 {
+		return nil, fmt.Errorf("There are no lists matching the owner and at least one of the targets")
+	}
+
 	return lists, nil
 }
