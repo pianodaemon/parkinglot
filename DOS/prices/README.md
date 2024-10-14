@@ -176,5 +176,5 @@ GET
 
 ```sh
 
-pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists?owner=chilli-willie&targets=coca&targets=pepsi'
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists?owner=viajes%20Ponchito&targets=coca&targets=pepsi'
 ```
