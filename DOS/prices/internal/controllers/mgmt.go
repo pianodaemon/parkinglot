@@ -98,7 +98,7 @@ func RetrievePriceByTuple(pricesManagerImplt hups.PricesManagerInterface) func(c
 
 		priceVal, err := pricesManagerImplt.RetrievePriceByTuple(priceTupl)
 		if err != nil {
-			c.JSON(http.StatusOK, gin.H{"error": err.Error()})
+			c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 			return
 		}
 
