@@ -39,7 +39,7 @@ func TestWithMongoDBContainer(t *testing.T) {
 
 	db := client.Database("pricing_db")
 
-	listName := misc.GenerateNameWithTimestamp("winter-2024")
+	listName := misc.GenerateNameWithCurrency(misc.GenerateNameWithTimestamp("winter-2024"))
 	verifyPrices(t, db, listName)
 	verifyDeletion(t, db, listName)
 }
