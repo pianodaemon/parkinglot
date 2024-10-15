@@ -17,5 +17,11 @@ func GenerateHash(priceTuple map[string]string) string {
 // GenerateNameWithTimestamp generates a name in the format "prefix-current_timestamp".
 func GenerateNameWithTimestamp(prefix string) string {
 
-	return fmt.Sprintf("%s-%d", prefix, time.Now().Unix())
+	return fmt.Sprintf("%d-%s", time.Now().Unix(), prefix)
+}
+
+func GenerateNameWithCurrency(prefix string) string {
+
+	currency := "MXN"
+	return fmt.Sprintf("%s-%s", currency, prefix)
 }

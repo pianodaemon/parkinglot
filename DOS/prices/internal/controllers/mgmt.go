@@ -43,7 +43,7 @@ func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Cont
 			return
 		}
 
-		reqPriceList.List = misc.GenerateNameWithTimestamp(reqPriceList.List)
+		reqPriceList.List = misc.GenerateNameWithCurrency(misc.GenerateNameWithTimestamp(reqPriceList.List))
 
 		err := pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner)
 		if err != nil {
