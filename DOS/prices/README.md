@@ -87,6 +87,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
 --data '{
     "list": "winter",
     "owner": "viajes Ponchito",
+    "currency": "EUR",
     "targets": [
         "coca",
         "pepsi"
@@ -125,7 +126,7 @@ pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/price-lists' \
 ```
 **Explanation**:
 
--   This `POST` request creates a new price list called `winter`, owned by `viajes Ponchito`.
+-   This `POST` request creates a new price list called `winter`, owned by `viajes Ponchito` for `EUR` currency.
 -   The list is shared with two targets: `coca` and `pepsi`.
 -   Four prices are added, each corresponding to a different combination of attributes like `sku`, `unit`, `material`, and `tservicio`.
 -   Each price is assigned a specific value under the `price` field, allowing for granular control over the pricing of different items.
@@ -138,7 +139,7 @@ This command adds a new price to an existing price list.
 
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
 --data '{
-    "list": "winter-1728533139",
+    "list": "EUR-winter-1728533139",
     "sku": "84738-382888",
     "unit": "m3",
     "material": "radiactivo",
@@ -161,7 +162,7 @@ This command updates an existing price within a price list.
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/prices' \
 --header 'Content-Type: application/json' \
 --data '{
-    "list": "winter-1728533139",
+    "list": "EUR-winter-1728533139",
     "sku": "84738-382777",
     "unit": "m3",
     "material": "aluminio",
@@ -181,7 +182,7 @@ This command retrieves the price for a specific item based on its tuple.
 ```sh
 
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
-'localhost:8080/prices?list=winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
+'localhost:8080/prices?list=EUR-winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
 ```
 
 **Explanation**:
