@@ -18,7 +18,7 @@ The next json fragments elaborate on one of the several lists owned by "viajes P
 # Collection "price_lists"
 
 {
-    "list": "winter-1728533139",  # <--- this is a unique index
+    "list": "EUR-1728533139-winter",  # <--- this is a unique index
     "owner": "viajes Ponchito"
 }
 ```
@@ -27,12 +27,12 @@ The next json fragments elaborate on one of the several lists owned by "viajes P
 # Collection "targets"
 
 {
-    "list": "winter-1728533139",
+    "list": "EUR-1728533139-winter",
     "target": "pepsi"
 }
 
 {
-    "list": "winter-2024-1728533139",
+    "list": "EUR-1728533139-winter",
     "target": "coca"
 }
 ```
@@ -42,7 +42,7 @@ The next json fragments elaborate on one of the several lists owned by "viajes P
 
 {
       "tuple": {
-            "list": "winter-1728533139",
+            "list": "EUR-1728533139-winter",
             "sku": "1254-545-66",
             "unit": "m3",
             "material": "madera",
@@ -139,7 +139,7 @@ This command adds a new price to an existing price list.
 
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location 'localhost:8080/prices' \
 --data '{
-    "list": "EUR-winter-1728533139",
+    "list": "EUR-1728533139-winter",
     "sku": "84738-382888",
     "unit": "m3",
     "material": "radiactivo",
@@ -162,7 +162,7 @@ This command updates an existing price within a price list.
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location --request PUT 'localhost:8080/prices' \
 --header 'Content-Type: application/json' \
 --data '{
-    "list": "EUR-winter-1728533139",
+    "list": "EUR-1728533139-winter",
     "sku": "84738-382777",
     "unit": "m3",
     "material": "aluminio",
@@ -182,7 +182,7 @@ This command retrieves the price for a specific item based on its tuple.
 ```sh
 
 pianodaemon@LAPTOP-4RSVIK4C:~$ curl --location  \
-'localhost:8080/prices?list=EUR-winter-1728533139&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
+'localhost:8080/prices?list=EUR-1728533139-winter&sku=84738-382777&unit=m3&material=aluminio&tservicio=recoleccion'
 ```
 
 **Explanation**:
