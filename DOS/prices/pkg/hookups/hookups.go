@@ -1,8 +1,6 @@
 package hookups
 
 import (
-	"fmt"
-
 	"blaucorp.com/prices/internal/dal"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -27,14 +25,11 @@ type (
 	}
 )
 
-func NewPricesManager() *PricesManager {
+func NewPricesManager(mongoURI string) *PricesManager {
 
 	pm := &PricesManager{}
 
 	pm.dbID = "pricing_db"
-
-	// Connect to MongoDB along with pool of connections
-	mongoURI := fmt.Sprintf("mongodb://user:123qwe@%s:%s/", "localhost", "27017")
 	err := dal.SetUpConnMongoDB(&(pm.mcli), mongoURI)
 	if err != nil {
 		panic(err.Error())

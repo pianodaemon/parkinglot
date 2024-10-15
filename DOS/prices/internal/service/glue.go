@@ -3,6 +3,7 @@ package service
 import (
 	co "blaucorp.com/prices/internal/controllers"
 	hups "blaucorp.com/prices/pkg/hookups"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -17,7 +18,14 @@ func Engage() (merr error) {
 		}
 	}()
 
-	pricesManagerImplt := hups.NewPricesManager()
+	getEnv := func(key, fallback string) string {
+		if value, ok := os.LookupEnv(key); ok {
+			return value
+		}
+		return fallback
+	}
+
+	pricesManagerImplt := hups.NewPricesManager(getEnv("MONGO_URI", "mongodb://127.0.0.1:27017"))
 
 	r := gin.Default()
 	setUpHandlers(r, pricesManagerImplt)
