@@ -191,7 +191,8 @@ func GenerateNameWithCurrency(currency string, prefix string) string {
 }
 
 // ValidateISO4217Code checks if a given currency code exists in the ISO4217SymbolsSet.
-// Returns nil if valid, otherwise returns an error.
+// Returns nil if valid, otherwise returns an error,
+// additionally it returns the respective currency symbol.
 func ValidateISO4217Code(currencyCode string) (string, error) {
 	val, exists := symbolsISO4217[currencyCode]
 	if !exists {
