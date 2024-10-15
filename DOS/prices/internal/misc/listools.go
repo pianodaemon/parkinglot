@@ -20,8 +20,7 @@ func GenerateNameWithTimestamp(prefix string) string {
 	return fmt.Sprintf("%d-%s", time.Now().Unix(), prefix)
 }
 
-func GenerateNameWithCurrency(prefix string) string {
+func GenerateNameWithCurrency(currency string, prefix string) string {
 
-	currency := "MXN"
 	return fmt.Sprintf("%s-%s", currency, prefix)
 }
