@@ -20,10 +20,11 @@ type (
 	}
 
 	priceList struct {
-		List    string   `json:"list" binding:"required"`
-		Owner   string   `json:"owner" binding:"required"`
-		Targets []string `json:"targets" binding:"required"`
-		Prices  []price  `json:"prices" binding:"required"`
+		List     string   `json:"list" binding:"required"`
+		Owner    string   `json:"owner" binding:"required"`
+		Currency string   `json:"currency" binding:"required"`
+		Targets  []string `json:"targets" binding:"required"`
+		Prices   []price  `json:"prices" binding:"required"`
 	}
 
 	priceUpdateRequest struct {
@@ -43,9 +44,13 @@ func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Cont
 			return
 		}
 
-		reqPriceList.List = misc.GenerateNameWithCurrency("MXN", misc.GenerateNameWithTimestamp(reqPriceList.List))
+		_, err := misc.ValidateISO4217Code(reqPriceList.Currency)
+		if err != nil {
+			panic(err.Error())
+		}
+		reqPriceList.List = misc.GenerateNameWithCurrency(reqPriceList.Currency, misc.GenerateNameWithTimestamp(reqPriceList.List))
 
-		err := pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner)
+		err = pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner)
 		if err != nil {
 			panic(err.Error())
 		}
