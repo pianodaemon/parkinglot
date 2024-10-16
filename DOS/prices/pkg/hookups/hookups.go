@@ -11,7 +11,7 @@ type (
 
 	// PricesManagerInterface defines the contract for managing price lists
 	PricesManagerInterface interface {
-		DoCreatePriceList(listName, owner, currency string) error
+		DoCreatePriceList(listName, owner, currency string) (string, error)
 		DoDeleteList(listName string) error
 		DoAssignTargets(listName string, targets []string) error
 		DoAddPrice(listName, sku, unit, material, tservicio string, price float64) error
@@ -39,15 +39,14 @@ func NewPricesManager(mongoURI string) *PricesManager {
 	return pm
 }
 
-func (self *PricesManager) DoCreatePriceList(listName, owner, currency string) error {
-	db := self.mcli.Database(self.dbID)
+func (self *PricesManager) DoCreatePriceList(listName, owner, currency string) (string, error) {
 	_, err := misc.ValidateISO4217Code(currency)
 	if err != nil {
-		return err
+		return "", err
 	}
-	name := misc.GenerateNameWithCurrency(
-		currency, misc.GenerateNameWithTimestamp(listName))
-	return dal.CreatePriceList(db, name, owner)
+	name := misc.GenerateNameWithCurrency(currency, misc.GenerateNameWithTimestamp(listName))
+	db := self.mcli.Database(self.dbID)
+	return name, dal.CreatePriceList(db, name, owner)
 }
 
 func (self *PricesManager) DoDeleteList(listName string) error {

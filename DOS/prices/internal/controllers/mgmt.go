@@ -43,18 +43,18 @@ func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Cont
 			return
 		}
 
-		err := pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner, reqPriceList.Currency)
+		name, err := pricesManagerImplt.DoCreatePriceList(reqPriceList.List, reqPriceList.Owner, reqPriceList.Currency)
 		if err != nil {
 			panic(err.Error())
 		}
-		pricesManagerImplt.DoAssignTargets(reqPriceList.List, reqPriceList.Targets)
+		pricesManagerImplt.DoAssignTargets(name, reqPriceList.Targets)
 
 		// Add fake prices
 		for _, price := range reqPriceList.Prices {
-			pricesManagerImplt.DoAddPrice(reqPriceList.List, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
+			pricesManagerImplt.DoAddPrice(name, price.Sku, price.Unit, price.Material, price.Tservicio, price.Price)
 		}
 
-		fmt.Println("-------> body: ", reqPriceList)
+		fmt.Println("-------> body: ", name)
 		c.JSON(http.StatusOK, gin.H{
 			"results": "ok",
 		})
