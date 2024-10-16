@@ -34,7 +34,7 @@ func Engage() (merr error) {
 	return nil
 }
 
-func setUpHandlers(r *gin.Engine, pm *hups.PricesManager) {
+func setUpHandlers(r *gin.Engine, pm co.PricesManagerInterface) {
 
 	r.GET("/ping", co.Health)
 	r.POST("/price-lists", co.CreateList(pm))

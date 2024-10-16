@@ -38,8 +38,12 @@ func TestWithMongoDBContainer(t *testing.T) {
 	defer client.Disconnect(ctx)
 
 	db := client.Database("pricing_db")
-
-	listName := misc.GenerateNameWithTimestamp("winter-2024")
+	currencyPesos := "MXN"
+	_, err = misc.ValidateISO4217Code(currencyPesos)
+	if err != nil {
+		t.Fatalf("non-valid currency: %s", err)
+	}
+	listName := misc.GenerateNameWithCurrency(currencyPesos, misc.GenerateNameWithTimestamp("winter"))
 	verifyPrices(t, db, listName)
 	verifyDeletion(t, db, listName)
 }
