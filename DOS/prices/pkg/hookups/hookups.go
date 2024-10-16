@@ -2,6 +2,7 @@ package hookups
 
 import (
 	"blaucorp.com/prices/internal/dal"
+	"blaucorp.com/prices/internal/misc"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -10,7 +11,7 @@ type (
 
 	// PricesManagerInterface defines the contract for managing price lists
 	PricesManagerInterface interface {
-		DoCreatePriceList(listName, owner string) error
+		DoCreatePriceList(listName, owner, currency string) error
 		DoDeleteList(listName string) error
 		DoAssignTargets(listName string, targets []string) error
 		DoAddPrice(listName, sku, unit, material, tservicio string, price float64) error
@@ -38,9 +39,15 @@ func NewPricesManager(mongoURI string) *PricesManager {
 	return pm
 }
 
-func (self *PricesManager) DoCreatePriceList(listName, owner string) error {
+func (self *PricesManager) DoCreatePriceList(listName, owner, currency string) error {
 	db := self.mcli.Database(self.dbID)
-	return dal.CreatePriceList(db, listName, owner)
+	_, err := misc.ValidateISO4217Code(currency)
+	if err != nil {
+		return err
+	}
+	name := misc.GenerateNameWithCurrency(
+		currency, misc.GenerateNameWithTimestamp(listName))
+	return dal.CreatePriceList(db, name, owner)
 }
 
 func (self *PricesManager) DoDeleteList(listName string) error {
