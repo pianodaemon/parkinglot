@@ -8,18 +8,6 @@ import (
 )
 
 type (
-
-	// PricesManagerInterface defines the contract for managing price lists
-	PricesManagerInterface interface {
-		DoCreatePriceList(listName, owner, currency string) (string, error)
-		DoDeleteList(listName string) error
-		DoAssignTargets(listName string, targets []string) error
-		DoAddPrice(listName, sku, unit, material, tservicio string, price float64) error
-		DoEditPrice(listName, sku, unit, material, tservicio string, price float64) error
-		DoRetrievePriceByTuple(priceTuple map[string]string) (float64, error)
-		DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error)
-	}
-
 	PricesManager struct {
 		dbID string
 		mcli *mongo.Client

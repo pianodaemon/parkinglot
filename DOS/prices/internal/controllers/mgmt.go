@@ -4,12 +4,21 @@ import (
 	"fmt"
 	"net/http"
 
-	hups "blaucorp.com/prices/pkg/hookups"
-
 	"github.com/gin-gonic/gin"
 )
 
 type (
+	// PricesManagerInterface defines the contract for managing price lists
+	PricesManagerInterface interface {
+		DoCreatePriceList(listName, owner, currency string) (string, error)
+		DoDeleteList(listName string) error
+		DoAssignTargets(listName string, targets []string) error
+		DoAddPrice(listName, sku, unit, material, tservicio string, price float64) error
+		DoEditPrice(listName, sku, unit, material, tservicio string, price float64) error
+		DoRetrievePriceByTuple(priceTuple map[string]string) (float64, error)
+		DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error)
+	}
+
 	price struct {
 		Sku       string  `json:"sku" binding:"required"`
 		Unit      string  `json:"unit" binding:"required"`
@@ -32,7 +41,7 @@ type (
 	}
 )
 
-func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+func CreateList(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 
@@ -61,7 +70,7 @@ func CreateList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Cont
 	}
 }
 
-func UpdatePrice(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+func UpdatePrice(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		var req priceUpdateRequest
@@ -80,7 +89,7 @@ func UpdatePrice(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Con
 	}
 }
 
-func RetrievePriceByTuple(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+func RetrievePriceByTuple(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		list := c.Query("list")
@@ -107,7 +116,7 @@ func RetrievePriceByTuple(pricesManagerImplt hups.PricesManagerInterface) func(c
 	}
 }
 
-func AddPriceToList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+func AddPriceToList(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		var req priceUpdateRequest
@@ -126,7 +135,7 @@ func AddPriceToList(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.
 	}
 }
 
-func GetListsByOwnerAndTargets(pricesManagerImplt hups.PricesManagerInterface) func(c *gin.Context) {
+func GetListsByOwnerAndTargets(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 		reqOwner := c.Query("owner")
