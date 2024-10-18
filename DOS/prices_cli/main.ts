@@ -9,7 +9,7 @@ async function runClient() {
     // Create a price list
     console.log("\nCreating a new price list...");
 
-    const list = "inv-2060";
+    const list = "invierno 2060";
     const currency = "MXN";
     const targets = [
       "coca",
