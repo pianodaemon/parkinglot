@@ -1,0 +1,30 @@
+#!/bin/sh +x
+
+# default disk for minikube
+MINIKUBE_DISK="$IMPT_ROOT/:/DISK/"
+ 
+# default namespace
+NS="sagan"
+
+case "$1" in
+start)
+  minikube start --driver=docker --mount --mount-string="$MINIKUBE_DISK" --namespace="$NS"
+
+  minikube addons enable registry
+
+  # Reverse and load balancer for our cluster
+  minikube addons enable ingress
+
+  # This arbitrary time has been the price for including addons
+  sleep 30
+  ;;
+destroy)
+  minikube stop
+  minikube delete
+  ;;
+stop)
+  minikube stop
+  ;;
+*)
+  echo "Usage: `basename "$0"` {start|stop|destroy}"
+esac

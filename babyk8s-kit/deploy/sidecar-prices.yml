@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: sidecar-prices
+    project: innovative-extension
+  name: sidecar-prices
+  namespace: sagan
+spec:
+  type: NodePort
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 30100
+  selector:
+    app: prices
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: sidecar-prices-dpl
+    project: innovative-extension
+  namespace: sagan
+  name: sidecar-prices-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prices
+  template:
+    metadata:
+      labels:
+        app: prices
+        project: innovative-extension
+    spec:
+      containers:
+      - image: localhost:5000/sidecars/prices:latest
+        name: prices
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_URI
+          value: "mongodb://mongodb-srv.sagan.svc.cluster.local:27017"

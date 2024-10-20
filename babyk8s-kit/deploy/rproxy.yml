@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: innovative-rproxy
+  namespace: sagan  # Ensure this matches the namespace of your service or adjust accordingly
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2  # Keep this if your service needs the path rewritten
+spec:
+  ingressClassName: nginx  # Updated to use the new field instead of deprecated annotation
+  rules:
+    - http:
+        paths:
+          - path: /api/sidecars/prices(/|$)(.*)  # Path for your sidecar service
+            pathType: ImplementationSpecific  # Use ImplementationSpecific to allow regex-like paths
+            backend:
+              service:
+                name: sidecar-prices  # Ensure this matches your Service name
+                port:
+                  number: 8080  # Port exposed by your service
