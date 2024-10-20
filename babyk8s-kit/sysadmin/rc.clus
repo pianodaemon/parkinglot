@@ -20,7 +20,7 @@ commands=(
 # Loop through the array and execute each command with sudo su - admin
 for cmd in "${commands[@]}"; do
     sudo su - admin -c "$cmd"
-    
+
     # Check the exit status of the command
     if [ $? -ne 0 ]; then
         echo "Command failed: $cmd"
