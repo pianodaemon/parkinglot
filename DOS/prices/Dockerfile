@@ -27,6 +27,6 @@ COPY --from=builder /sidecar-prices $APP_DIR
 COPY scripts/run.sh $APP_DIR
 WORKDIR $APP_DIR
 
-EXPOSE 10100
+EXPOSE 8080
 
 CMD ["/run.sh"]
