@@ -9,7 +9,7 @@ async function runClient() {
     // Create a price list
     console.log("\nCreating a new price list...");
 
-    const list = "invierno 2060";
+    const listLabel = "invierno 2060";
     const currency = "MXN";
     const targets = [
       "coca",
@@ -25,14 +25,14 @@ async function runClient() {
       },
       {
         sku: "2345-987999",
-        unit: "litros",
+        unit: "kg",
         material: "vidrio",
         tservicio: "limpia",
         price: 1500.00
       },
     ];
 
-    const results = await client.createPriceListFromParams(list, currency, targets, prices);
+    const results = await client.createPriceListFromParams(listLabel, currency, targets, prices);
     console.log(results);
 
     // -------------------------------------------
@@ -46,6 +46,17 @@ async function runClient() {
     console.log(`\nFetching all price list names by owner ${owner} and targets ${targets}...`);
     const listNames = await client.fetchListsForTargets(targets);
     console.log(listNames);
+
+    // -------------------------------------------
+    // Add a price to a specific price list
+    console.log(`\nAdding a price to a price list...`);
+    const sku = "123-4512-22";
+    const unit = "kg";
+    const material = "cascajo";
+    const tservicio = "recoleccion";
+    const price = 450.10;
+    const message = await client.addPrice(listName, sku, unit, material, tservicio, price);
+    console.log(message);
 
   } catch (error) {
     console.error(error);

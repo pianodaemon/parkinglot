@@ -108,7 +108,7 @@ export class PriceListsApiClient {
   ): Promise<{ results: string }> {
 
     const postData = {
-      list: `${list.label}-${list.created_at}-${list.currency}`, // Concatenate label, created_at, and currency
+      list: `${list.currency}-${list.created_at}-${list.label}`, // Concatenate label, created_at, and currency
       sku,
       unit,
       material,
