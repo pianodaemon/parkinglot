@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# Function to display usage information
+function display_usage() {
+    echo "Usage: $0 [engage|disengage]"
+}
+
+# Check for correct number of arguments
+if [ "$#" -ne 1 ]; then
+    display_usage
+    exit 1
+fi
+
+# Array of YAML files for deployment
+FILES=(
+    "mongodb-srv.yml"
+    "sidecar-prices.yml"
+    "rproxy.yml"
+)
+
+# Handle engage/disengage operations
+case "$1" in
+    engage)
+        echo "Populating local registry with the required images..."
+        make -f "$SIDECARS_HOME/babyk8s-kit/populate.mk"
+
+        # Create namespace if it doesn't exist
+        if kubectl get namespace sagan >/dev/null 2>&1; then
+            echo "Namespace 'sagan' already exists."
+        else
+            echo "Creating namespace 'sagan'..."
+            kubectl create namespace sagan
+        fi
+
+        # Apply deployment files
+        for file in "${FILES[@]}"; do
+            echo "Deploying $file..."
+            kubectl apply -f "$SIDECARS_HOME/babyk8s-kit/deploy/$file"
+        done
+        ;;
+
+    disengage)
+        # Reverse apply deployment files
+        for (( idx=${#FILES[@]}-1 ; idx>=0 ; idx-- )); do
+            echo "Removing ${FILES[idx]}..."
+            kubectl delete -f "$SIDECARS_HOME/babyk8s-kit/deploy/${FILES[idx]}"
+        done
+
+        # Delete namespace if it exists
+        if kubectl get namespace sagan >/dev/null 2>&1; then
+            echo "Deleting namespace 'sagan'..."
+            kubectl delete namespace sagan
+        fi
+
+        echo "Cleaning up local registry..."
+        make -f "$SIDECARS_HOME/babyk8s-kit/populate.mk" clean
+        ;;
+
+    *)
+        echo "Invalid option: $1"
+        display_usage
+        exit 1
+        ;;
+esac
+
+echo "Operation completed successfully."

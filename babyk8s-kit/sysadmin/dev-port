@@ -1,0 +1,9 @@
+#!/bin/sh
+
+EXTERNAL_PORT=8888
+NODE_PORT=80
+
+CMD_PFORWARD=$(printf 'kubectl port-forward --address=0.0.0.0 --namespace=ingress-nginx service/ingress-nginx-controller %s:%s' \
+        $EXTERNAL_PORT $NODE_PORT)
+
+nohup $CMD_PFORWARD &
