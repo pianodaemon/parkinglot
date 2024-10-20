@@ -11,7 +11,7 @@ commands=(
     "$SCRIPT_DIR/r4cpf"
 
     # Install the latest cluster setup
-    "$SCRIPT_DIR/install engage"
+    "$SCRIPT_DIR/deploy engage"
 
     # Set up the port forwarding command for kubectl
     "$SCRIPT_DIR/dev-port"
