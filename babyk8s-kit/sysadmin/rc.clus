@@ -7,17 +7,20 @@ commands=(
     # Start off Minikube
     "$SCRIPT_DIR/clusmgmt start"
 
-    # Set up the port forwarding command for kubectl
+    # Carry out port redirection from localhost toward the registry within the cluster
     "$SCRIPT_DIR/r4cpf"
 
-    # Carry out port redirection from localhost toward the registry within the cluster
+    # Install the latest cluster setup
+    "$SCRIPT_DIR/install engage"
+
+    # Set up the port forwarding command for kubectl
     "$SCRIPT_DIR/dev-port"
 )
 
 # Loop through the array and execute each command with sudo su - admin
 for cmd in "${commands[@]}"; do
     sudo su - admin -c "$cmd"
-    
+
     # Check the exit status of the command
     if [ $? -ne 0 ]; then
         echo "Command failed: $cmd"
