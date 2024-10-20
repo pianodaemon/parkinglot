@@ -1,7 +1,7 @@
 GOCMD=go
 GOBUILD=$(GOCMD) build -ldflags="-w -s" 
 
-PRICES_EXE=./prices_launcher
+PRICES_EXE=./sidecar-prices
 
 all: build
 
