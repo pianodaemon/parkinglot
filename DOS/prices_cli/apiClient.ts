@@ -108,7 +108,7 @@ export class PriceListsApiClient {
   ): Promise<{ results: string }> {
 
     const postData = {
-      list: `${list.currency}-${list.created_at}-${list.label}`, // Concatenate label, created_at, and currency
+      list: `${list.currency}-${list.created_at}-${list.label}`, // Concatenate currency, created_at, and label
       sku,
       unit,
       material,
@@ -140,7 +140,7 @@ export class PriceListsApiClient {
   ): Promise<{ results: string }> {
 
     const postData = {
-      list: `${list.label}-${list.created_at}-${list.currency}`, // Concatenate label, created_at, and currency
+      list: `${list.currency}-${list.created_at}-${list.label}`, // Concatenate currency, created_at, and label
       sku,
       unit,
       material,
@@ -171,7 +171,7 @@ export class PriceListsApiClient {
   ): Promise<Price> {
 
     const response = await fetch(
-      `${this.baseUrl}/prices?list=${encodeURIComponent(`${list.label}-${list.created_at}-${list.currency}`)}&sku=${encodeURIComponent(sku)}&unit=${encodeURIComponent(unit)}&material=${encodeURIComponent(material)}&tservicio=${encodeURIComponent(tservicio)}`
+      `${this.baseUrl}/prices?list=${encodeURIComponent(`${list.currency}-${list.created_at}-${list.label}`)}&sku=${encodeURIComponent(sku)}&unit=${encodeURIComponent(unit)}&material=${encodeURIComponent(material)}&tservicio=${encodeURIComponent(tservicio)}`
     );
 
     if (!response.ok) {
