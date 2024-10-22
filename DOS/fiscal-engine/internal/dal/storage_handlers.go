@@ -3,6 +3,7 @@ package dal
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -13,24 +14,29 @@ import (
 )
 
 // CreateReceipt inserts a new Receipt into MongoDB.
-func CreateReceipt(db *mongo.Database, receipt *models.Receipt) error {
+func CreateReceipt(db *mongo.Database, receipt *models.Receipt) (primitive.ObjectID, error) {
 	collection := db.Collection("receipts")
 
 	// Ensure that the receipt doesn't already have an ID (new documents should not have one)
 	if receipt.ID != primitive.NilObjectID {
-		return errors.New("receipt already has an ID; cannot create")
+		return primitive.NilObjectID, errors.New("receipt already has an ID; cannot create")
 	}
 
 	// Generate a new ObjectID for the new receipt
 	receipt.ID = primitive.NewObjectID()
 
 	// Insert the new receipt document into the collection
-	_, err := collection.InsertOne(context.TODO(), receipt)
+	result, err := collection.InsertOne(context.TODO(), receipt)
 	if err != nil {
-		return err
+		return primitive.NilObjectID, err
 	}
 
-	return nil
+	// Return the generated ObjectID
+	oid, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
+		return primitive.NilObjectID, fmt.Errorf("failed to retrieve generated ObjectID")
+	}
+	return oid, nil
 }
 
 // EditReceipt updates an existing Receipt in MongoDB.
