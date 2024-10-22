@@ -112,16 +112,17 @@ func verifyReceiptStorage(t *testing.T, db *mongo.Database) {
 		},
 	}
 
-	// Call CreateReceipt function
-	err := dal.CreateReceipt(db, &receipt)
+	// Call CreateReceipt function and check if it returns the generated ObjectID
+	oid, err := dal.CreateReceipt(db, &receipt)
 	assert.NoError(t, err)
+	assert.False(t, oid.IsZero(), "Returned ObjectID should not be empty")
 
 	// Get the test database and collection
 	collection := db.Collection("receipts")
 
 	// Verify the receipt was inserted into the collection
 	var result models.Receipt
-	err = collection.FindOne(context.TODO(), bson.M{"_id": receipt.ID}).Decode(&result)
+	err = collection.FindOne(context.TODO(), bson.M{"_id": oid}).Decode(&result)
 	assert.NoError(t, err)
 
 	// Assert that the inserted receipt matches the original one
