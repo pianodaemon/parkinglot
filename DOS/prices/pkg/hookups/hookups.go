@@ -70,8 +70,3 @@ func (self *PricesManager) DoGetListsByOwnerAndTargets(owner string, targets []s
 	db := self.mcli.Database(self.dbID)
 	return dal.GetListsByOwnerAndTargets(db, owner, targets)
 }
-
-func (self *PricesManager) DoCreateIndexes() error {
-	db := self.mcli.Database(self.dbID)
-	return dal.IndexCreationSamples(db)
-}
