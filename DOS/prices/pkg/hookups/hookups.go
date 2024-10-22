@@ -24,6 +24,10 @@ func NewPricesManager(mongoURI string) *PricesManager {
 		panic(err.Error())
 	}
 
+	err = dal.CheckIndexesToCreate(pm.mcli.Database(pm.dbID))
+	if err != nil {
+		panic(err.Error())
+	}
 	return pm
 }
 
