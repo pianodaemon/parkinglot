@@ -24,6 +24,10 @@ func NewPricesManager(mongoURI string) *PricesManager {
 		panic(err.Error())
 	}
 
+	err = dal.CheckIndexesToCreate(pm.mcli.Database(pm.dbID))
+	if err != nil {
+		panic(err.Error())
+	}
 	return pm
 }
 
@@ -65,4 +69,9 @@ func (self *PricesManager) DoRetrievePriceByTuple(priceTuple map[string]string) 
 func (self *PricesManager) DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error) {
 	db := self.mcli.Database(self.dbID)
 	return dal.GetListsByOwnerAndTargets(db, owner, targets)
+}
+
+func (self *PricesManager) DoCreateIndexes() error {
+	db := self.mcli.Database(self.dbID)
+	return dal.IndexCreationSamples(db)
 }
