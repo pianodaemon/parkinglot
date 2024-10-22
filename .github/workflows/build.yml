@@ -23,3 +23,8 @@ jobs:
         run: |
           cd DOS/prices
           make test
+
+      - name: Run tests for fiscal 
+        run: |
+          cd DOS/fiscal-engine
+          make test
