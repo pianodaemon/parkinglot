@@ -1,6 +1,8 @@
 package hookups
 
 import (
+	"strings"
+
 	"blaucorp.com/prices/internal/dal"
 	"blaucorp.com/prices/internal/misc"
 
@@ -69,4 +71,12 @@ func (self *PricesManager) DoRetrievePriceByTuple(priceTuple map[string]string) 
 func (self *PricesManager) DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error) {
 	db := self.mcli.Database(self.dbID)
 	return dal.GetListsByOwnerAndTargets(db, owner, targets)
+}
+
+func (self *PricesManager) DoClonePriceList(originalListName, newListName string) (string, error) {
+	sep := "-"
+	subs := strings.Split(originalListName, sep)
+	newLName := misc.GenerateNameWithCurrency(subs[0], misc.GenerateNameWithTimestamp(newListName))
+	db := self.mcli.Database(self.dbID)
+	return newLName, dal.ClonePriceList(db, originalListName, newLName)
 }

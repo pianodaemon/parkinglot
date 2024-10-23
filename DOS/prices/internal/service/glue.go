@@ -1,9 +1,10 @@
 package service
 
 import (
+	"os"
+
 	co "blaucorp.com/prices/internal/controllers"
 	hups "blaucorp.com/prices/pkg/hookups"
-	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,4 +43,5 @@ func setUpHandlers(r *gin.Engine, pm co.PricesManagerInterface) {
 	r.GET("/prices", co.RetrievePriceByTuple(pm))
 	r.POST("/prices", co.AddPriceToList(pm))
 	r.GET("/price-lists", co.GetListsByOwnerAndTargets(pm))
+	r.POST("/price-lists/clone", co.CloneList(pm))
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -130,6 +131,96 @@ func EditPrice(db *mongo.Database, listName, sku, unit, material, tservicio stri
 	_, err = priceCollection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ClonePriceList clones a price list, its targets, and prices with a new name.
+func ClonePriceList(db *mongo.Database, originalListName, newListName string) error {
+	ctx := context.TODO()
+
+	// Collections
+	priceListCollection := db.Collection("price_lists")
+	targetCollection := db.Collection("targets")
+	priceCollection := db.Collection("prices")
+
+	// Clone the price list
+	var originalList bson.M
+	err := priceListCollection.FindOne(ctx, bson.M{"list": originalListName}).Decode(&originalList)
+	if err != nil {
+		return fmt.Errorf("failed to find the original list: %v", err)
+	}
+
+	// Create the new price list with the new name
+	originalList["list"] = newListName
+	delete(originalList, "_id")
+	_, err = priceListCollection.InsertOne(ctx, originalList)
+	if err != nil {
+		return fmt.Errorf("failed to insert the cloned list: %v", err)
+	}
+	fmt.Printf("Cloned price list '%s' as '%s'\n", originalListName, newListName)
+
+	// Clone the targets associated with the original list
+	cursor, err := targetCollection.Find(ctx, bson.M{"list": originalListName})
+	if err != nil {
+		return fmt.Errorf("failed to find targets: %v", err)
+	}
+	defer cursor.Close(ctx)
+
+	var clonedTargets []interface{}
+	for cursor.Next(ctx) {
+		var target bson.M
+		err := cursor.Decode(&target)
+		if err != nil {
+			log.Printf("failed to decode target: %v", err)
+			continue
+		}
+		target["list"] = newListName // Update the list name
+		delete(target, "_id")
+		clonedTargets = append(clonedTargets, target)
+	}
+	if len(clonedTargets) > 0 {
+		_, err = targetCollection.InsertMany(ctx, clonedTargets)
+		if err != nil {
+			return fmt.Errorf("failed to insert cloned targets: %v", err)
+		}
+		fmt.Printf("Cloned targets for list '%s'\n", newListName)
+	}
+
+	// Clone the prices associated with the original list
+	cursor, err = priceCollection.Find(ctx, bson.M{"tuple.list": originalListName})
+	if err != nil {
+		return fmt.Errorf("failed to find prices: %v", err)
+	}
+	defer cursor.Close(ctx)
+
+	var clonedPrices []interface{}
+	for cursor.Next(ctx) {
+		var price bson.M
+		err := cursor.Decode(&price)
+		if err != nil {
+			log.Printf("failed to decode price: %v", err)
+			continue
+		}
+		price["tuple"].(bson.M)["list"] = newListName // Update the list name in the tuple
+		tpl := map[string]string{
+			"list":      price["tuple"].(bson.M)["list"].(string),
+			"sku":       price["tuple"].(bson.M)["sku"].(string),
+			"unit":      price["tuple"].(bson.M)["unit"].(string),
+			"material":  price["tuple"].(bson.M)["material"].(string),
+			"tservicio": price["tuple"].(bson.M)["tservicio"].(string),
+		}
+		price["hash"] = misc.GenerateHash(tpl)
+		delete(price, "_id")
+		clonedPrices = append(clonedPrices, price)
+	}
+	if len(clonedPrices) > 0 {
+		_, err = priceCollection.InsertMany(ctx, clonedPrices)
+		if err != nil {
+			return fmt.Errorf("failed to insert cloned prices: %v", err)
+		}
+		fmt.Printf("Cloned prices for list '%s'\n", newListName)
 	}
 
 	return nil
