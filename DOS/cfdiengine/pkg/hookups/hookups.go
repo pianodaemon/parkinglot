@@ -97,6 +97,15 @@ func (self *FiscalEngine) DoCreateReceipt(dto *ReceiptDTO) (string, error) {
 	return id.Hex(), err
 }
 
+func (self *FiscalEngine) DoEditReceipt(receiptID string, dto *ReceiptDTO) error {
+
+	if len(dto.Items) == 0 {
+		return errors.New("receipt must have at least one item")
+	}
+
+	return nil
+}
+
 // convertTaxes converts a slice of TaxDTO to a slice of Tax, calculates amounts using Base and Rate
 func convertTaxes(taxesDTO []TaxDTO, base float64) []models.Tax {
 	taxes := make([]models.Tax, len(taxesDTO))
