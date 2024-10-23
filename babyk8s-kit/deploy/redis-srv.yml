@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis-srv
+    project: innovative-extension
+  name: redis-srv
+  namespace: sagan
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    app: redis
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis-dpl
+    project: innovative-extension
+  namespace: sagan
+  name: redis-dpl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        project: innovative-extension
+    spec:
+      containers:
+      - image: redis:alpine
+        name: redis
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379

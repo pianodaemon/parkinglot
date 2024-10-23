@@ -13,6 +13,7 @@ fi
 
 # Array of YAML files for deployment
 FILES=(
+    "redis-srv.yml"
     "mongodb-srv.yml"
     "sidecar-prices.yml"
     "rproxy.yml"
