@@ -43,5 +43,5 @@ func setUpHandlers(r *gin.Engine, pm co.PricesManagerInterface) {
 	r.GET("/prices", co.RetrievePriceByTuple(pm))
 	r.POST("/prices", co.AddPriceToList(pm))
 	r.GET("/price-lists", co.GetListsByOwnerAndTargets(pm))
-	r.POST("/price-lists/clone", co.CloneList(pm))
+	r.POST("/price-lists/clone/:from/:to", co.CloneList(pm))
 }
