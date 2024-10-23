@@ -17,6 +17,7 @@ type (
 		DoEditPrice(listName, sku, unit, material, tservicio string, price float64) error
 		DoRetrievePriceByTuple(priceTuple map[string]string) (float64, error)
 		DoGetListsByOwnerAndTargets(owner string, targets []string) ([]string, error)
+		DoClonePriceList(originalListName, newListName string) (string, error)
 	}
 
 	price struct {
@@ -148,5 +149,32 @@ func GetListsByOwnerAndTargets(pricesManagerImplt PricesManagerInterface) func(c
 		}
 
 		c.JSON(http.StatusOK, gin.H{"lists": lists})
+	}
+}
+
+func CloneList(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
+
+	return func(c *gin.Context) {
+
+		var reqListName struct {
+			OriginalList string `json:"original_list" binding:"required"`
+			NewList      string `json:"new_list" binding:"required"`
+		}
+		if err := c.ShouldBind(&reqListName); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": "the body should be form of list name",
+			})
+			return
+		}
+		name, err := pricesManagerImplt.DoClonePriceList(reqListName.OriginalList, reqListName.NewList)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"new_list": name,
+		})
 	}
 }
