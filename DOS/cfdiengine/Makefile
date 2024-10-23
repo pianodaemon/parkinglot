@@ -11,7 +11,7 @@ build: fmt
 	GOARCH=amd64 \
 	$(GOBUILD) -o $(FISCAL_EXE) cmd/http/run.go
 
-test:
+test:	build
 	$(GOCMD) test -v ./...
 
 fmt:
