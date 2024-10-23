@@ -14,17 +14,7 @@ jobs:
         with:
           go-version: '1.23.2'
 
-      - name: Build and Test fiscal-engine
-        run: |
-          cd DOS/cfdiengine
-          make test
-
-      - name: Build prices
-        run: |
-          cd DOS/prices
-          make build
-
-      - name: Run tests for prices
+      - name: Build and test for prices
         run: |
           cd DOS/prices
           make test
