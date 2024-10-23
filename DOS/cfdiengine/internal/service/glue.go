@@ -39,4 +39,5 @@ func setUpHandlers(r *gin.Engine, pm co.FiscalEngineInterface) {
 
 	r.GET("/ping", co.Health)
 	r.POST("/receipts", co.CreateReceipt(pm))
+	r.PUT("/receipts/:id", co.EditReceipt(pm))
 }

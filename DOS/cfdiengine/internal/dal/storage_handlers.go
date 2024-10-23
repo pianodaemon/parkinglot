@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -82,4 +83,34 @@ func EditReceipt(db *mongo.Database, receipt *models.Receipt) error {
 	}
 
 	return nil
+}
+
+// GetReceiptByID retrieves a Receipt by its ID (as a string) from MongoDB.
+func GetReceiptByID(db *mongo.Database, receiptID string) (*models.Receipt, error) {
+	collection := db.Collection("receipts")
+
+	// Convert the string ID to ObjectID
+	objID, err := primitive.ObjectIDFromHex(receiptID)
+	if err != nil {
+		return nil, errors.New("invalid receipt ID format")
+	}
+
+	// Create a context with a timeout for the database operation
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	// Prepare the filter to find the receipt by ID
+	filter := bson.M{"_id": objID}
+	receipt := &models.Receipt{}
+
+	// Find the receipt in the collection
+	err = collection.FindOne(ctx, filter).Decode(receipt)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, errors.New("receipt not found")
+		}
+		return nil, err
+	}
+
+	return receipt, nil
 }
