@@ -46,7 +46,7 @@ This command updates an existing receipt for specific receptor.
 
 ```sh
 
-curl -X PUT http://localhost:8080/receipts/60d5cabcabc1234567890def \
+pianodaemon@LAPTOP-4RSVIK4C:~$ curl -X PUT http://localhost:8080/receipts/60d5cabcabc1234567890def \
 -H "Content-Type: application/json" \
 -d '{
   "owner": "UpdatedCompanyName",
