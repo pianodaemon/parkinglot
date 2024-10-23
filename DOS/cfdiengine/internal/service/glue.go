@@ -38,5 +38,5 @@ func Engage() (merr error) {
 func setUpHandlers(r *gin.Engine, pm co.FiscalEngineInterface) {
 
 	r.GET("/ping", co.Health)
-	r.POST("/receipt", co.CreateReceipt(pm))
+	r.POST("/receipts", co.CreateReceipt(pm))
 }
