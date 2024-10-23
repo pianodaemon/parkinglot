@@ -70,5 +70,4 @@ func EditReceipt(fiscalEngineImplt FiscalEngineInterface) func(c *gin.Context) {
 			"result": "receipt updated successfully",
 		})
 	}
-
 }
