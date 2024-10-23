@@ -156,17 +156,11 @@ func CloneList(pricesManagerImplt PricesManagerInterface) func(c *gin.Context) {
 
 	return func(c *gin.Context) {
 
-		var reqListName struct {
-			OriginalList string `json:"original_list" binding:"required"`
-			NewList      string `json:"new_list" binding:"required"`
-		}
-		if err := c.ShouldBind(&reqListName); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{
-				"error": "the body should be form of list name",
-			})
-			return
-		}
-		name, err := pricesManagerImplt.DoClonePriceList(reqListName.OriginalList, reqListName.NewList)
+		originalList := c.Param("from")
+		// A list name has this nomenclature: '{currency}-{timestamp in seconds}-{label}'
+		newLabel := c.Param("to")
+
+		name, err := pricesManagerImplt.DoClonePriceList(originalList, newLabel)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"error": err.Error(),
