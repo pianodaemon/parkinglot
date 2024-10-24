@@ -82,7 +82,7 @@ func UpdatePrice(pricesManagerImplt PricesManagerInterface) func(c *gin.Context)
 		}
 
 		if err := pricesManagerImplt.DoEditPrice(req.List, req.Sku, req.Unit, req.Material, req.Tservicio, req.Price); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update price"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
@@ -128,7 +128,7 @@ func AddPriceToList(pricesManagerImplt PricesManagerInterface) func(c *gin.Conte
 		}
 
 		if err := pricesManagerImplt.DoAddPrice(req.List, req.Sku, req.Unit, req.Material, req.Tservicio, req.Price); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to add price"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
 
