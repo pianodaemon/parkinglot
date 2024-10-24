@@ -47,6 +47,11 @@ func AssignTargets(db *mongo.Database, listName string, targets []string) error 
 
 // Function to add a price to the list
 func AddPrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) error {
+	// Verify price list existence
+	if !ExistsPriceList(db, listName) {
+		return fmt.Errorf("Price list %s does not exist", listName)
+	}
+
 	priceCollection := db.Collection("prices")
 	priceTuple := map[string]string{
 		"list":      listName,
@@ -95,6 +100,11 @@ func DeleteList(db *mongo.Database, listName string) error {
 }
 
 func EditPrice(db *mongo.Database, listName, sku, unit, material, tservicio string, price float64) error {
+	// Verify price list existence
+	if !ExistsPriceList(db, listName) {
+		return fmt.Errorf("Price list %s does not exist", listName)
+	}
+
 	priceCollection := db.Collection("prices")
 	priceTuple := map[string]string{
 		"list":      listName,
@@ -224,4 +234,16 @@ func ClonePriceList(db *mongo.Database, originalListName, newListName string) er
 	}
 
 	return nil
+}
+
+func ExistsPriceList(db *mongo.Database, listName string) bool {
+
+	priceListCollection := db.Collection("price_lists")
+	var originalList bson.M
+
+	err := priceListCollection.FindOne(context.TODO(), bson.M{"list": listName}).Decode(&originalList)
+	if err != nil {
+		return false
+	}
+	return true
 }
